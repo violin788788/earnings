@@ -28,7 +28,7 @@ def char_1000(stock):
             f.write(content)
         print(f"Truncated quarterly report: {folder_name}")
 
-def get_dates(stock):
+def mine_dates(stock):
     stock_file = os.path.join("sec-edgar-filings",stock)
     folder_yearly = os.path.join(stock_file,"10-K")
     folder_quarterly = os.path.join(stock_file,"10-Q")
@@ -72,7 +72,7 @@ cwd = os.getcwd()
 print (cwd)
 
 
-get_dates(stock)
+mine_dates(stock)
 #char_1000(stock)
 
 
