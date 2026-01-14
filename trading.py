@@ -2,7 +2,7 @@ import sys,os
 from sec_edgar_downloader import Downloader
 dl = Downloader("YourCompanyName", "your@email.com")
 
-stock = "msft"
+stock = "aapl"
 
 stock = stock.upper()
 print(stock)
