@@ -20,7 +20,7 @@ commands = [
     "git add -A",
     'git commit -m "update/create/delete files+folders"'
 ]
-
+print("adding files")
 # Execute the commands in the shell using os.system()
 for command in commands:
     os.system(command)
