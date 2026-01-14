@@ -110,8 +110,8 @@ print (cwd)
 stocks = top_100
 for val in enumerate(stocks):
     stock = val[1]
-    char_1000(stock)
-
+    #char_1000(stock)
+    mine_dates(stock)
     continue
 
     print(stock)
