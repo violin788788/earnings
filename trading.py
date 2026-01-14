@@ -1,3 +1,31 @@
+didnt_work = ["TSM"]
+
+top_100 = [
+    "NVDA", "AAPL", "GOOGL", "MSFT", "AMZN", 
+    "AVGO", "META", "BRK.A", "TSLA",
+    "LLY", "WMT", "JPM", "V", "JNJ",
+    "XOM", "UNH", "BAC", "MA", "NVDA",  # NVDA appears high and repeated for emphasis
+    "ORCL", "VZ", "HD", "PEP", "KO",
+    "PG", "COST", "CRM", "ADBE", "CSCO",
+    "TMO", "CVX", "ABBV", "ACN", "NKE",
+    "C", "MDT", "AVY", "UPS", "SCHW",
+    "TMUS", "DHR", "TXN", "LOW", "MS",
+    "NEE", "RTX", "HON", "COP", "IBM",
+    "QCOM", "INTU", "AMGN", "SBUX", "GE",
+    "PLD", "AXP", "CME", "BKNG", "MMM",
+    "SO", "DUK", "SPGI", "BLK", "CI",
+    "CCI", "ISRG", "GILD", "BSX", "ANTM",
+    "FISV", "KMB", "CL", "ETN", "PNC",
+    "ZTS", "ADP", "MET", "AON", "PGR",
+    "EL", "TJX", "CB", "FITB", "KEY",
+    "HBAN", "MCO", "HUM", "ICE", "ALL",
+    "PSA", "KMI", "CNC", "RSG", "ETR",
+    "PEG", "XEL", "AWK", "ECL", "KR",
+    "DG", "HLT", "D", "EOG", "OXY",
+    "MPC", "CVS"
+]
+
+
 def char_1000(stock):
     stock_file = os.path.join("sec-edgar-filings",stock)
     folder_yearly = os.path.join(stock_file,"10-K")
@@ -67,20 +95,26 @@ from sec_edgar_downloader import Downloader
 dl = Downloader("YourCompanyName", "your@email.com")
 stock = "aapl"
 stock = stock.upper()
+stocks = [stock]
 print(stock)
 cwd = os.getcwd()
 print (cwd)
 
 
-mine_dates(stock)
+#mine_dates(stock)
 #char_1000(stock)
 
+#sys.exit()
 
-sys.exit()
 
-print(stock+" getting quarterly reports")
-# Quarterly reports (10-Q)
-dl.get("10-Q", stock, after="2022-01-01", before="2025-01-01")
-print(stock+" getting yearly reports")
-# Annual reports (10-K)
-dl.get("10-K", stock, after="2022-01-01", before="2025-01-01")
+stocks = top_100
+for val in enumerate(stocks):
+    stock = val[1]
+    print(stock)
+    print(stock+" getting quarterly reports")
+    # Quarterly reports (10-Q)
+    dl.get("10-Q", stock, after="2022-01-01", before="2025-01-01")
+    print(stock+" getting yearly reports")
+    # Annual reports (10-K)
+    dl.get("10-K", stock, after="2022-01-01", before="2025-01-01")
+    char_1000(stock)
