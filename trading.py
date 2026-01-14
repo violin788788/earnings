@@ -110,6 +110,10 @@ print (cwd)
 stocks = top_100
 for val in enumerate(stocks):
     stock = val[1]
+    char_1000(stock)
+
+    continue
+
     print(stock)
     print(stock+" getting quarterly reports")
     # Quarterly reports (10-Q)
