@@ -1,0 +1,60 @@
+
+
+# Ignore all directories and subdirectories
+*/
+
+# Ignore all files that do not contain a dot (.)
+# This will ignore files without extensions, e.g., "screenshot", "textiden", etc.
+*[^.]*
+
+# Track files with extensions (files that have a dot in their name)
+!**/*.*  # Allow files with a dot in their name
+
+
+# Ignore all directories with a Git repository
+*/.git/
+
+#Ignore all directories
+*/
+
+# Ignore files without extensions (no dot in the name)
+# This will ignore files that don’t have a dot, e.g., "file" or "directory_name"
+!*/ # Allow all files and subdirectories, then ignore everything
+!**/*.*
+
+
+# Ignore Python bytecode files
+*.pyc
+*.pyo
+
+# Ignore the virtual environment
+.venv/
+.env/
+virtualenv/
+*.env
+
+# Ignore the cache and configuration directories
+.cache/
+.config/
+.ipython/
+.local/
+.virtualenvs/
+token/
+
+# Ignore sensitive files (e.g., tokens, credentials)
+token.txt
+token
+README.txt
+.git-credentials
+
+# Ignore system-specific files
+.bashrc
+.vimrc
+.profile
+.pythonstartup.py
+.lesshst
+
+# Ignore editor & IDE specific files (e.g., VSCode, PyCharm, etc.)
+.vscode/
+.idea/
+
