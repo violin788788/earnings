@@ -111,11 +111,13 @@ stocks = top_100
 
 for a, stock in enumerate(top_100):
     print(a, stock)
-    stock = val[1]
     check = os.path.join("sec-edgar-filings",stock)
     if os.path.exists(check):
         continue
-    #char_1000(stock)
+    
+    char_1000(stock)
+    continue
+    
     #mine_dates(stock)
     #continue
     print(stock)
