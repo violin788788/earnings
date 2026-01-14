@@ -1,8 +1,8 @@
-didnt_work = ["TSM"]
+didnt_work = ["TSM","BRK.A"]
 
 top_100 = [
     "NVDA", "AAPL", "GOOGL", "MSFT", "AMZN", 
-    "AVGO", "META", "BRK.A", "TSLA",
+    "AVGO", "META","TSLA",
     "LLY", "WMT", "JPM", "V", "JNJ",
     "XOM", "UNH", "BAC", "MA", "NVDA",  # NVDA appears high and repeated for emphasis
     "ORCL", "VZ", "HD", "PEP", "KO",
@@ -100,20 +100,24 @@ print(stock)
 cwd = os.getcwd()
 print (cwd)
 
-
 #mine_dates(stock)
 #char_1000(stock)
 
 #sys.exit()
 
-
 stocks = top_100
-for val in enumerate(stocks):
-    stock = val[1]
-    #char_1000(stock)
-    mine_dates(stock)
-    continue
 
+
+
+for a, stock in enumerate(top_100):
+    print(a, stock)
+    stock = val[1]
+    check = os.path.join("sec-edgar-filings",stock)
+    if os.path.exists(check):
+        continue
+    #char_1000(stock)
+    #mine_dates(stock)
+    #continue
     print(stock)
     print(stock+" getting quarterly reports")
     # Quarterly reports (10-Q)
