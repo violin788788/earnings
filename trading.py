@@ -110,7 +110,7 @@ function = "fix"
 stocks = top_100
 for a, stock in enumerate(top_100):
     print(a, stock)
-    if function=="fix":
+    if function=="sec":
         try:
             #char_1000(stock)
             mine_dates(stock)
