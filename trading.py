@@ -106,11 +106,11 @@ print (cwd)
 
 #sys.exit()
 #function   sec vs fix
-function = "fix"
+function = "sec"
 stocks = top_100
 for a, stock in enumerate(top_100):
     print(a, stock)
-    if function=="sec":
+    if function=="fix":
         try:
             #char_1000(stock)
             mine_dates(stock)
@@ -121,8 +121,6 @@ for a, stock in enumerate(top_100):
     check = os.path.join("sec-edgar-filings",stock)
     if os.path.exists(check):
         continue
-
-    
     #mine_dates(stock)
     #continue
     print(stock)
