@@ -1,19 +1,7 @@
-import sys,os
-from sec_edgar_downloader import Downloader
-dl = Downloader("YourCompanyName", "your@email.com")
-
-stock = "aapl"
-
-stock = stock.upper()
-print(stock)
-
-cwd = os.getcwd()
-print (cwd)
-
-
 def char_1000(stock):
-    folder_yearly = os.path.join("sec-edgar-filings",stock,"10-K")
-    folder_quarterly = os.path.join("sec-edgar-filings",stock,"10-Q")
+    stock_file = os.path.join("sec-edgar-filings",stock)
+    folder_yearly = os.path.join(stock_file,"10-K")
+    folder_quarterly = os.path.join(stock_file,"10-Q")
     print(folder_yearly)
     print(folder_quarterly)
     files_yearly = os.listdir(folder_yearly)
@@ -40,15 +28,52 @@ def char_1000(stock):
             f.write(content)
         print(f"Truncated quarterly report: {folder_name}")
 
+def get_dates(stock):
+    stock_file = os.path.join("sec-edgar-filings",stock)
+    folder_yearly = os.path.join(stock_file,"10-K")
+    folder_quarterly = os.path.join(stock_file,"10-Q")
+    print(folder_yearly)
+    print(folder_quarterly)
+    files_yearly = os.listdir(folder_yearly)
+    files_quarterly = os.listdir(folder_quarterly)
+    print(files_yearly)
+    print(files_quarterly)
+    # Truncate yearly reports
+    for folder_name in files_yearly:
+        #print(folder_name)
+        file_path = os.path.join(folder_yearly, folder_name,"full-submission.txt")
+        with open(file_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        iden = "FILED AS OF DATE:"
+        begin = content.find(iden)
+        end = content.find("\n",begin)
+        earn_date = content[begin:end]
+        earn_date = earn_date
+        print(earn_date)
+
+    for folder_name in files_quarterly:
+        #print(folder_name)
+        file_path = os.path.join(folder_quarterly, folder_name,"full-submission.txt")
+        with open(file_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        iden = "FILED AS OF DATE:"
+        begin = content.find(iden)
+        end = content.find("\n",begin)
+        earn_date = content[begin:end]
+        print(earn_date)
+
+import sys,os
+from sec_edgar_downloader import Downloader
+dl = Downloader("YourCompanyName", "your@email.com")
+stock = "aapl"
+stock = stock.upper()
+print(stock)
+cwd = os.getcwd()
+print (cwd)
 
 
-
-    """
-    load the txts..and then rewrite them with only first 1000 chars..
-
-    """
-
-char_1000(stock)
+get_dates(stock)
+#char_1000(stock)
 
 
 sys.exit()
