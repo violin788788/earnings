@@ -1,8 +1,5 @@
 
 
-# Ignore all directories and subdirectories
-*/
-
 # Ignore all files that do not contain a dot (.)
 # This will ignore files without extensions, e.g., "screenshot", "textiden", etc.
 *[^.]*
@@ -14,13 +11,9 @@
 # Ignore all directories with a Git repository
 */.git/
 
-#Ignore all directories
-*/
 
-# Ignore files without extensions (no dot in the name)
-# This will ignore files that don’t have a dot, e.g., "file" or "directory_name"
-!*/ # Allow all files and subdirectories, then ignore everything
-!**/*.*
+
+
 
 
 # Ignore Python bytecode files
