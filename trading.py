@@ -90,6 +90,7 @@ def mine_dates(stock):
         earn_date = content[begin:end]
         print(earn_date)
 
+from pathlib import Path
 import sys,os
 from sec_edgar_downloader import Downloader
 dl = Downloader("YourCompanyName", "your@email.com")
@@ -104,19 +105,23 @@ print (cwd)
 #char_1000(stock)
 
 #sys.exit()
-
+#function   sec vs fix
+function = "fix"
 stocks = top_100
-
-
-
 for a, stock in enumerate(top_100):
     print(a, stock)
+    if function=="fix":
+        try:
+            #char_1000(stock)
+            mine_dates(stock)
+        except:
+            continue
+        continue
+
     check = os.path.join("sec-edgar-filings",stock)
     if os.path.exists(check):
         continue
-    
-    char_1000(stock)
-    continue
+
     
     #mine_dates(stock)
     #continue
