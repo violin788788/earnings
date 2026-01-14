@@ -1,20 +1,5 @@
 
 
-# Ignore all files that do not contain a dot (.)
-# This will ignore files without extensions, e.g., "screenshot", "textiden", etc.
-*[^.]*
-
-# Track files with extensions (files that have a dot in their name)
-!**/*.*  # Allow files with a dot in their name
-
-
-# Ignore all directories with a Git repository
-*/.git/
-
-
-
-
-
 
 # Ignore Python bytecode files
 *.pyc
