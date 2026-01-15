@@ -82,8 +82,14 @@ def mine_dates(stock):
         begin = content.find(iden)
         end = content.find("\n",begin)
         earn_date = content[begin:end]
-        earn_date = earn_date
-        print(earn_date)
+        #print(earn_date)
+        #print(type(earn_date))
+
+        earn33 = earn_date[earn_date.find("\t"):len(earn_date)]
+        earn33 = earn33.replace("\t","")
+        print(earn33)
+
+
 
     for folder_name in files_quarterly:
         #print(folder_name)
@@ -94,7 +100,14 @@ def mine_dates(stock):
         begin = content.find(iden)
         end = content.find("\n",begin)
         earn_date = content[begin:end]
-        print(earn_date)
+        #print(earn_date)
+
+        earn33 = earn_date[earn_date.find("\t"):len(earn_date)]
+        earn33 = earn33.replace("\t","")
+        print(earn33)
+
+
+
 
 from pathlib import Path
 import sys,os
@@ -112,7 +125,7 @@ print (cwd)
 
 #sys.exit()
 #function   sec vs fix
-function = "sec"
+function = "fix"
 stocks = top_100
 for a, stock in enumerate(top_100):
     print(a, stock)
