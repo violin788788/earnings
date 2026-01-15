@@ -1,4 +1,4 @@
-didnt_work = ["TSM","BRK.A","C","MS"]
+didnt_work = ["TSM","BRK.A","C","MS","SO","DUK"]
 
 top_100 = [
     "NVDA", "AAPL", "GOOGL", "MSFT", "AMZN",
@@ -13,7 +13,7 @@ top_100 = [
     "NEE", "RTX", "HON", "COP", "IBM",
     "QCOM", "INTU", "AMGN", "SBUX", "GE",
     "PLD", "AXP", "CME", "BKNG", "MMM",
-    "SO", "DUK", "SPGI", "BLK", "CI",
+    "SPGI", "BLK", "CI",
     "CCI", "ISRG", "GILD", "BSX", "ANTM",
     "FISV", "KMB", "CL", "ETN", "PNC",
     "ZTS", "ADP", "MET", "AON", "PGR",
