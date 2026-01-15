@@ -1,14 +1,14 @@
-didnt_work = ["TSM","BRK.A"]
+didnt_work = ["TSM","BRK.A","C"]
 
 top_100 = [
-    "NVDA", "AAPL", "GOOGL", "MSFT", "AMZN", 
+    "NVDA", "AAPL", "GOOGL", "MSFT", "AMZN",
     "AVGO", "META","TSLA",
     "LLY", "WMT", "JPM", "V", "JNJ",
     "XOM", "UNH", "BAC", "MA", "NVDA",  # NVDA appears high and repeated for emphasis
     "ORCL", "VZ", "HD", "PEP", "KO",
     "PG", "COST", "CRM", "ADBE", "CSCO",
     "TMO", "CVX", "ABBV", "ACN", "NKE",
-    "C", "MDT", "AVY", "UPS", "SCHW",
+    "MDT", "AVY", "UPS", "SCHW",
     "TMUS", "DHR", "TXN", "LOW", "MS",
     "NEE", "RTX", "HON", "COP", "IBM",
     "QCOM", "INTU", "AMGN", "SBUX", "GE",
@@ -127,6 +127,10 @@ for a, stock in enumerate(top_100):
     print(stock+" getting quarterly reports")
     # Quarterly reports (10-Q)
     dl.get("10-Q", stock, after="2022-01-01", before="2025-01-01")
+    try:
+        char_1000(stock)
+    except:
+        meow = "meow"
     print(stock+" getting yearly reports")
     # Annual reports (10-K)
     dl.get("10-K", stock, after="2022-01-01", before="2025-01-01")
