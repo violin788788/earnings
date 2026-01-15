@@ -1,5 +1,5 @@
 didnt_work = ["TSM","BRK.A","C","MS","SO","DUK","BLK",
-              "ANTM"
+              "ANTM","MET"
 
 
 
@@ -22,7 +22,7 @@ top_100 = [
     "SPGI", "CI",
     "CCI", "ISRG", "GILD", "BSX",
     "FISV", "KMB", "CL", "ETN",
-    "ZTS", "ADP", "MET", "AON", "PGR",
+    "ZTS", "ADP", "AON", "PGR",
     "EL", "TJX", "CB", "FITB", "KEY",
     "HBAN", "MCO", "HUM", "ICE", "ALL",
     "PSA", "KMI", "CNC", "RSG", "ETR",
