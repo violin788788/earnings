@@ -154,16 +154,17 @@ def char_1000(stocks):
 
 
 
+def get_yahoo(stocks):
+    for stock in stocks:
+        print(stock)
+
+
 #get_sec_dates(stocks):
-char_1000(stocks)
+#char_1000(stocks)
 #gen_reports(stocks):
-#def get_yahoo(stocks):
+get_yahoo(stocks):
 
-
-
-
-char_1000(stocks)
-
+sys.exit()
 
 
 for a, stock in enumerate(top_100):
