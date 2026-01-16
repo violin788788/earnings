@@ -157,7 +157,7 @@ print (cwd)
 
 #sys.exit()
 #function   sec vs fix
-function = "fix"
+function = "sec"
 stocks = top_100
 for a, stock in enumerate(top_100):
     print(a, stock)
