@@ -120,20 +120,31 @@ print (cwd)
 #char_1000(stock)
 
 #sys.exit()
-#function   sec vs fix
-function = "fix"
+#function = sec,mine,gen_report
+function = "gen_report"
 #gen..what kind of file to have data?
 stocks = top_100
+output = []
 for a, stock in enumerate(top_100):
     print(a, stock)
-    if function=="fix":
+    if function=="gen_report":
         try:
             #char_1000(stock)
-            mine_dates(stock)
+            reports = mine_dates(stock)
+            print("reports",reports)
+            new_dates = []
+            for date in reports:
+                new = date.replace("FILED AS OF DATE:\t\t","")
+                #print(new)
+                new_dates.append(new)
+            new_dates.sort()
+            to_out = [stock,new_dates]
+            print(stock,new_dates)
+            output.append(to_out)
+
         except:
             continue
         continue
-
     check = os.path.join("sec-edgar-filings",stock)
     if os.path.exists(check):
         continue
@@ -153,3 +164,15 @@ for a, stock in enumerate(top_100):
         char_1000(stock)
     except:
         continue
+#print(output)
+output.sort()
+out_text = ""
+for item in output:
+    print(item)
+    out_text=out_text+str(item)+"\n"
+out_file ='dates.txt' 
+with open(out_file, 'w') as file:
+    # Write text to the file
+    file.write(out_text)
+os.startfile(out_file)
+
