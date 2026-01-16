@@ -1,12 +1,15 @@
-didnt_work = ["TSM","BRK.A","C","MS","SO","DUK","BLK",
-              "ANTM","MET"
+didnt_work=[
 
-
-
-
+            #"TSM","BRK.A","C","MS","SO","DUK","BLK",
+            #"ANTM","MET"
 ]
+#,"BRKA","ANTM"
+
 
 top_100 = [
+    "TSM","C","MS","SO","DUK","BLK",
+    "MET",
+
     "NVDA", "AAPL", "GOOGL", "MSFT", "AMZN",
     "AVGO", "META","TSLA",
     "LLY", "WMT", "JPM", "V", "JNJ",
@@ -150,4 +153,7 @@ for a, stock in enumerate(top_100):
     print(stock+" getting yearly reports")
     # Annual reports (10-K)
     dl.get("10-K", stock, after="2022-01-01", before="2025-01-01")
-    char_1000(stock)
+    try:
+        char_1000(stock)
+    except:
+        continue
