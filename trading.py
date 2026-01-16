@@ -62,6 +62,28 @@ def char_1000(stock):
             f.write(content)
         print(f"Truncated quarterly report: {folder_name}")
 
+
+def earn_dates(folder):
+    files = os.listdir(folder)
+    back = []
+    for folder_name in files:
+        #print(folder_name)
+        file_path = os.path.join(folder, folder_name,"full-submission.txt")
+        with open(file_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        iden = "FILED AS OF DATE:"
+        begin = content.find(iden)
+        end = content.find("\n",begin)
+        earn_date = content[begin:end]
+        #print(earn_date)
+        #print(type(earn_date))
+        #earn33 = earn_date[earn_date.find("\t"):len(earn_date)]
+        #earn33 = earn33.replace("\t","")
+        #print(earn33)
+        #back.append(earn33)
+        back.append(earn_date)
+    return back
+
 def mine_dates(stock):
     stock_file = os.path.join("sec-edgar-filings",stock)
     folder_yearly = os.path.join(stock_file,"10-K")
@@ -73,6 +95,14 @@ def mine_dates(stock):
     print(files_yearly)
     print(files_quarterly)
     # Truncate yearly reports
+    reports_yearly = earn_dates(folder_yearly)
+    reports_quarterly = earn_dates(folder_quarterly)
+    reports = reports_yearly+reports_quarterly
+    reports.sort()
+    for date in reports:
+        print(date)
+
+"""
     for folder_name in files_yearly:
         #print(folder_name)
         file_path = os.path.join(folder_yearly, folder_name,"full-submission.txt")
@@ -105,6 +135,8 @@ def mine_dates(stock):
         earn33 = earn_date[earn_date.find("\t"):len(earn_date)]
         earn33 = earn33.replace("\t","")
         print(earn33)
+
+    """
 
 
 
