@@ -66,7 +66,7 @@ def char_1000(stock):
         print(f"Truncated quarterly report: {folder_name}")
 
 
-def earn_dates(folder):
+def earnings_find(folder):
     files = os.listdir(folder)
     back = []
     for folder_name in files:
@@ -93,18 +93,14 @@ def mine_dates(stock):
     folder_quarterly = os.path.join(stock_file,"10-Q")
     print(folder_yearly)
     print(folder_quarterly)
-    files_yearly = os.listdir(folder_yearly)
-    files_quarterly = os.listdir(folder_quarterly)
-    print(files_yearly)
-    print(files_quarterly)
     # Truncate yearly reports
-    reports_yearly = earn_dates(folder_yearly)
-    reports_quarterly = earn_dates(folder_quarterly)
+    reports_yearly = earnings_find(folder_yearly)
+    reports_quarterly = earnings_find(folder_quarterly)
     reports = reports_yearly+reports_quarterly
     reports.sort()
     for date in reports:
         print(date)
-
+    return reports
 
 
 
@@ -125,7 +121,8 @@ print (cwd)
 
 #sys.exit()
 #function   sec vs fix
-function = "sec"
+function = "fix"
+#gen..what kind of file to have data?
 stocks = top_100
 for a, stock in enumerate(top_100):
     print(a, stock)
@@ -140,7 +137,6 @@ for a, stock in enumerate(top_100):
     check = os.path.join("sec-edgar-filings",stock)
     if os.path.exists(check):
         continue
-    #mine_dates(stock)
     #continue
     print(stock)
     print(stock+" getting quarterly reports")
