@@ -153,8 +153,50 @@ def char_1000(stocks):
 
 
 def price_history(stocks):
+    import time
+    import requests
+    import pandas as pd
+    API_KEY="65JaxrhDSYET1StvPxZy1KgpnttWna98"
+    for stock in stocks:
+        #SYMBOL="AAPL"
+        FROM_DATE="2023-01-01"
+        TO_DATE="2026-01-01"
+        OUT_FILE="price_history//"+stock+"_polygon_daily.csv"
+        BASE_URL=f"https://api.polygon.io/v2/aggs/ticker/{stock}/range/1/day/{FROM_DATE}/{TO_DATE}"
+        params={"adjusted":"true","sort":"asc","limit":50000,"apiKey":API_KEY}
+        all_bars=[]
+        url=BASE_URL
+        while url:
+            print(f"Fetching: {url}")
+            r=requests.get(url,params=params)
+            if r.status_code==429:
+                print("Rate limit hit, sleeping 60s")
+                time.sleep(60)
+                continue
+            r.raise_for_status()
+            data=r.json()
+            if "results" in data:
+                all_bars.extend(data["results"])
+            url=data.get("next_url")
+            if url:
+                url+=f"&apiKey={API_KEY}"
+                time.sleep(15)
+        df=pd.DataFrame(all_bars)
+        df["date"]=pd.to_datetime(df["t"],unit="ms")
+        df.set_index("date",inplace=True)
+        df.rename(columns={"o":"open","h":"high","l":"low","c":"close","v":"volume"},inplace=True)
+        df.to_csv(OUT_FILE)
+        print(df.head())
+        print("Saved to",OUT_FILE,"rows:",len(df))
+        wait_time = 15
+        for a in range(0,wait_time):
+            time.sleep(1)
+            print("waiting,",a+1,wait_time)
 
 
+
+
+    """
     from iexfinance.stocks import get_historical_data
     from datetime import datetime
     import pandas as pd
@@ -170,7 +212,6 @@ def price_history(stocks):
         except Exception as e:
             print(f"Failed to get data for {ticker} due to error: {e}")
 
-    """
 
     import yfinance as yf
     meta = yf.Ticker("AAPL")
@@ -185,7 +226,7 @@ def price_history(stocks):
         data.to_csv(f"{t}_prices.csv")
         print(f"Saved {t}_prices.csv")
 
-      
+
     import nasdaqdatalink
     import pandas as pd
 
@@ -245,7 +286,7 @@ def price_history(stocks):
         df.to_csv(csv_file)
         df.to_json(json_file, orient="records", date_format="iso")
         print(f"Saved {ticker} data to CSV and JSON")
-    skip = "skip" 
+    skip = "skip"
 
     """
 
@@ -259,7 +300,7 @@ def price_history(stocks):
     data.to_csv("AAPL_history.csv")
     data.to_json("AAPL_history.json", orient="records", date_format="iso")
     """
-      
+
 
 
 #get_sec_dates(stocks):
@@ -325,7 +366,7 @@ out_text = ""
 for item in output:
     print(item)
     out_text=out_text+str(item)+"\n"
-out_file ='earn_dates.txt' 
+out_file ='earn_dates.txt'
 with open(out_file, 'w') as file:
     # Write text to the file
     file.write(out_text)
