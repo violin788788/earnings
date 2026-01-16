@@ -9,8 +9,8 @@ print(system_type)
 if "Linux" in system_type:
     print("do not open chrome")
 
-
 #print system type
+
 
 
 #"git push origin main --force"
@@ -20,7 +20,7 @@ commands = [
     "git add -A",
     'git commit -m "update/create/delete files+folders"'
 ]
-print("adding files")
+
 # Execute the commands in the shell using os.system()
 for command in commands:
     os.system(command)
@@ -39,6 +39,7 @@ try:
 except subprocess.CalledProcessError as e:
     print(f"Error occurred: {e}")
 
+sys.exit()
 
 if "Linux" in system_type:
     print("do not open chrome")
