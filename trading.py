@@ -157,11 +157,19 @@ def price_history(stocks):
     import requests
     import pandas as pd
     API_KEY="65JaxrhDSYET1StvPxZy1KgpnttWna98"
+    folder_history = "price_history"
+    list_history = os.listdir(folder_history)
     for stock in stocks:
+        out_name = stock+"_polygon_daily.csv"
+        OUT_FILE = os.path.join(folder_history,out_name)
+        if out_name in list_history:
+            print("skip",stock)
+            continue
         #SYMBOL="AAPL"
         FROM_DATE="2023-01-01"
         TO_DATE="2026-01-01"
-        OUT_FILE="price_history//"+stock+"_polygon_daily.csv"
+        OUT_FILE = os.path.join(folder_history,stock+"_polygon_daily.csv")
+        #OUT_FILE="price_history//"+stock+"_polygon_daily.csv"
         BASE_URL=f"https://api.polygon.io/v2/aggs/ticker/{stock}/range/1/day/{FROM_DATE}/{TO_DATE}"
         params={"adjusted":"true","sort":"asc","limit":50000,"apiKey":API_KEY}
         all_bars=[]
@@ -191,7 +199,7 @@ def price_history(stocks):
         wait_time = 15
         for a in range(0,wait_time):
             time.sleep(1)
-            print("waiting,",a+1,wait_time)
+            print("waiting to not go over limit",a+1,wait_time)
 
 
 
