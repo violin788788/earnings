@@ -109,8 +109,6 @@ def mine_dates(stock):
 
 
 
-#import yfinance as yf
-#import pandas as pd
 
 from pathlib import Path
 import sys,os
@@ -154,15 +152,65 @@ def char_1000(stocks):
 
 
 
-def get_yahoo(stocks):
-    for stock in stocks:
-        print(stock)
+def price_history(stocks):
+  
+    import pandas_datareader.data as web
+    import pandas as pd
+    import datetime
+    import os
+    """
+    ticker = "AAPL"
+    start = datetime.datetime(2025, 1, 1)
+    end = datetime.datetime(2026, 1, 15)
+
+    data = web.DataReader(ticker, "yahoo", start, end)
+    print("Data fetched for:", ticker)
+    print(data.head())
+
+    output_dir = os.path.join(os.getcwd(), "data")
+    os.makedirs(output_dir, exist_ok=True)
+
+    csv_file = os.path.join(output_dir, f"{ticker}_history.csv")
+    data.to_csv(csv_file)
+    print(f"Saved CSV to {csv_file}")
+
+    json_file = os.path.join(output_dir, f"{ticker}_history.json")
+    data.to_json(json_file, orient="records", date_format="iso")
+    print(f"Saved JSON to {json_file}")
+    """
+
+
+   
+    #pip install yfinance==0.1.85
+    import yfinance as yf
+    import pandas as pd
+
+
+
+    from yahoo_fin import stock_info as si
+
+    ticker = "AAPL"
+    data = si.get_data(ticker, start_date="01/01/2023", end_date="01/15/2025")
+    print(data.head())
+
+    data.to_csv(f"{ticker}_history.csv")
+    data.to_json(f"{ticker}_history.json", orient="records", date_format="iso")
+
+    """
+    ticker = "AAPL"
+    data = yf.download(ticker, start="2025-01-01", end="2026-01-15")
+    print(data.head())
+
+    data.to_csv("AAPL_history.csv")
+    data.to_json("AAPL_history.json", orient="records", date_format="iso")
+    """
+      
 
 
 #get_sec_dates(stocks):
 #char_1000(stocks)
 #gen_reports(stocks):
-get_yahoo(stocks):
+price_history(stocks)
 
 sys.exit()
 
@@ -176,24 +224,7 @@ for a, stock in enumerate(top_100):
 
 
     print(a, stock)
-    if function=="yahoo":
-        continue
 
-
-        # Choose a stock symbol, e.g., Apple
-        ticker = 'AAPL'
-
-        # Create a Ticker object
-        stock = yf.Ticker(ticker)
-
-        # Get historical data for the last 5 years
-        hist = stock.history(period="5y")  # period="5y" = 5 years
-
-        # Print the first few rows
-        print(hist.head())
-
-        # Optional: save to CSV
-        hist.to_csv(f'{ticker}_5yr_history.csv')
 
 
     if function=="gen_report":
