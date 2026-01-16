@@ -255,7 +255,7 @@ out_file ='earn_dates.txt'
 with open(out_file, 'w') as file:
     # Write text to the file
     file.write(out_text)
-os.startfile(out_file)
+#os.startfile(out_file)
 
 
 
