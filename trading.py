@@ -102,41 +102,6 @@ def mine_dates(stock):
     for date in reports:
         print(date)
 
-"""
-    for folder_name in files_yearly:
-        #print(folder_name)
-        file_path = os.path.join(folder_yearly, folder_name,"full-submission.txt")
-        with open(file_path, "r", encoding="utf-8") as f:
-            content = f.read()
-        iden = "FILED AS OF DATE:"
-        begin = content.find(iden)
-        end = content.find("\n",begin)
-        earn_date = content[begin:end]
-        #print(earn_date)
-        #print(type(earn_date))
-
-        earn33 = earn_date[earn_date.find("\t"):len(earn_date)]
-        earn33 = earn33.replace("\t","")
-        print(earn33)
-
-
-
-    for folder_name in files_quarterly:
-        #print(folder_name)
-        file_path = os.path.join(folder_quarterly, folder_name,"full-submission.txt")
-        with open(file_path, "r", encoding="utf-8") as f:
-            content = f.read()
-        iden = "FILED AS OF DATE:"
-        begin = content.find(iden)
-        end = content.find("\n",begin)
-        earn_date = content[begin:end]
-        #print(earn_date)
-
-        earn33 = earn_date[earn_date.find("\t"):len(earn_date)]
-        earn33 = earn33.replace("\t","")
-        print(earn33)
-
-    """
 
 
 
