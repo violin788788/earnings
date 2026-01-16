@@ -170,7 +170,7 @@ out_text = ""
 for item in output:
     print(item)
     out_text=out_text+str(item)+"\n"
-out_file ='dates.txt' 
+out_file ='earn_dates.txt' 
 with open(out_file, 'w') as file:
     # Write text to the file
     file.write(out_text)
