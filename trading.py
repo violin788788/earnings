@@ -151,7 +151,6 @@ def char_1000(stocks):
                 print(f"Truncated yearly report: {specific_file}")
 
 
-
 def price_history(stocks):
     import time
     import requests
@@ -204,133 +203,12 @@ def price_history(stocks):
 
 
 
-    """
-    from iexfinance.stocks import get_historical_data
-    from datetime import datetime
-    import pandas as pd
-    API_KEY = "28e4cfac845f4b80b51ed216660c72a5"
-    tickers = ["AAPL", "MSFT", "GOOG"]
-    start = datetime(2023, 1, 1)
-    end = datetime(2025, 1, 15)
-    for ticker in tickers:
-        try:
-            df = get_historical_data(ticker, start=start, end=end, token=API_KEY, output_format='pandas')
-            df.to_csv(f"{ticker}_prices.csv")
-            print(f"Saved historical data for {ticker} to {ticker}_prices.csv")
-        except Exception as e:
-            print(f"Failed to get data for {ticker} due to error: {e}")
+#---------------main function-------------------
 
-
-    import yfinance as yf
-    meta = yf.Ticker("AAPL")
-    data = meta.history(period="max")
-    print(data.to_string())
-
-    import yfinance as yf
-
-    tickers = ["AAPL", "MSFT", "GOOG"]
-    for t in tickers:
-        data = yf.download(t, start="2023-01-01", end="2025-01-15")
-        data.to_csv(f"{t}_prices.csv")
-        print(f"Saved {t}_prices.csv")
-
-
-    import nasdaqdatalink
-    import pandas as pd
-
-    nasdaqdatalink.ApiConfig.api_key = "tdJuzj_PbUcpDhzo_Bqc"
-
-    data = nasdaqdatalink.get("EOD/AAPL", start_date="2023-01-01", end_date="2025-01-15")
-    data.to_csv("AAPL_prices.csv")
-    print("Saved AAPL_prices.csv")
-
-
-    import pandas_datareader.data as web
-    import pandas as pd
-    import datetime
-    import os
-    ticker = "AAPL"
-    start = datetime.datetime(2025, 1, 1)
-    end = datetime.datetime(2026, 1, 15)
-
-    data = web.DataReader(ticker, "yahoo", start, end)
-    print("Data fetched for:", ticker)
-    print(data.head())
-
-    output_dir = os.path.join(os.getcwd(), "data")
-    os.makedirs(output_dir, exist_ok=True)
-
-    csv_file = os.path.join(output_dir, f"{ticker}_history.csv")
-    data.to_csv(csv_file)
-    print(f"Saved CSV to {csv_file}")
-
-    json_file = os.path.join(output_dir, f"{ticker}_history.json")
-    data.to_json(json_file, orient="records", date_format="iso")
-    print(f"Saved JSON to {json_file}")
-
-
-    #pip install yfinance==0.1.85
-
-
-    import yfinance as yf
-    import os
-
-
-
-    tickers = ["AAPL", "MSFT", "GOOG"]
-    start_date = "2023-01-01"
-    end_date = "2025-01-15"
-
-    output_dir = os.path.join(os.getcwd(), "data")
-    os.makedirs(output_dir, exist_ok=True)
-
-    # Bulk download — handles multiple tickers and avoids timezone/thread issues
-    data = yf.download(tickers, start=start_date, end=end_date, group_by='ticker', auto_adjust=True, threads=False)
-
-    for ticker in tickers:
-        df = data[ticker] if len(tickers) > 1 else data
-        csv_file = os.path.join(output_dir, f"{ticker}_history.csv")
-        json_file = os.path.join(output_dir, f"{ticker}_history.json")
-        df.to_csv(csv_file)
-        df.to_json(json_file, orient="records", date_format="iso")
-        print(f"Saved {ticker} data to CSV and JSON")
-    skip = "skip"
-
-    """
-
-
-
-    """
-    ticker = "AAPL"
-    data = yf.download(ticker, start="2025-01-01", end="2026-01-15")
-    print(data.head())
-
-    data.to_csv("AAPL_history.csv")
-    data.to_json("AAPL_history.json", orient="records", date_format="iso")
-    """
-
-
-
-#get_sec_dates(stocks):
-#char_1000(stocks)
-#gen_reports(stocks):
-price_history(stocks)
-
-sys.exit()
 
 
 for a, stock in enumerate(top_100):
-
-
-
-
-
-
-
     print(a, stock)
-
-
-
     if function=="gen_report":
         try:
             #char_1000(stock)
@@ -345,7 +223,6 @@ for a, stock in enumerate(top_100):
             to_out = [stock,new_dates]
             print(stock,new_dates)
             output.append(to_out)
-
         except:
             continue
         continue
@@ -380,3 +257,12 @@ with open(out_file, 'w') as file:
     file.write(out_text)
 os.startfile(out_file)
 
+
+
+
+
+
+#get_sec_dates(stocks):
+#char_1000(stocks)
+#gen_reports(stocks):
+price_history(stocks)
