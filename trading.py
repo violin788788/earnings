@@ -264,5 +264,6 @@ with open(out_file, 'w') as file:
 
 #get_sec_dates(stocks):
 #char_1000(stocks)
-#gen_reports(stocks):
+#mine_earn_dates(stocks):
 price_history(stocks)
+#gen_analysis(stocks)
