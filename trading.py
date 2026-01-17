@@ -9,7 +9,6 @@ didnt_work=[
 top_100 = [
     "C","MS","SO","DUK","BLK",
     "MET","TSM",
-
     "NVDA", "AAPL", "GOOGL", "MSFT", "AMZN",
     "AVGO", "META","TSLA",
     "LLY", "WMT", "JPM", "V", "JNJ",
@@ -58,40 +57,6 @@ def earnings_find(folder):
 
 
 
-    """
-def char_1000(stock):
-    stock_file = os.path.join("sec-edgar-filings",stock)
-    folder_yearly = os.path.join(stock_file,"10-K")
-    folder_quarterly = os.path.join(stock_file,"10-Q")
-    print(folder_yearly)
-    print(folder_quarterly)
-    files_yearly = os.listdir(folder_yearly)
-    files_quarterly = os.listdir(folder_quarterly)
-    print(files_yearly)
-    print(files_quarterly)
-    # Truncate yearly reports
-    for folder_name in files_yearly:
-        print(folder_name)
-        file_path = os.path.join(folder_yearly, folder_name,"full-submission.txt")
-        with open(file_path, "r", encoding="utf-8") as f:
-            content = f.read()
-        content = content[:1000]  # keep only first 1000 chars
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write(content)
-        print(f"Truncated yearly report: {folder_name}")
-    for folder_name in files_quarterly:
-        print(folder_name)
-        file_path = os.path.join(folder_quarterly, folder_name,"full-submission.txt")
-        with open(file_path, "r", encoding="utf-8") as f:
-            content = f.read()
-        content = content[:1000]  # keep only first 1000 chars
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write(content)
-        print(f"Truncated quarterly report: {folder_name}")
-        """
-
-
-
 def mine_dates(stock):
     stock_file = os.path.join("sec-edgar-filings",stock)
     folder_yearly = os.path.join(stock_file,"10-K")
@@ -109,34 +74,15 @@ def mine_dates(stock):
 
 
 
-
-from pathlib import Path
-import sys,os
-from sec_edgar_downloader import Downloader
-dl = Downloader("YourCompanyName", "your@email.com")
-stock = "aapl"
-stock = stock.upper()
-stocks = [stock]
-print(stock)
-cwd = os.getcwd()
-print (cwd)
-
-#mine_dates(stock)
-#char_1000(stock)
-
-
-#function = sec,mine,gen_report,yahoo
-function = "gen_report"
-#gen..what kind of file to have data?
-stocks = top_100
-output = []
-
-
 #char_1000(stocks)
 def char_1000(stocks):
     for stock in stocks:
         stock_file = os.path.join("sec-edgar-filings",stock)
-        times_of_year = os.listdir(stock_file)
+        try:
+            times_of_year = os.listdir(stock_file)
+        except:
+            print(stock,"no values for it")
+            continue
         print(times_of_year)
         for time_of_year in times_of_year:
             dir_random = os.path.join(stock_file,time_of_year)
@@ -203,67 +149,54 @@ def price_history(stocks):
 
 
 
-#---------------main function-------------------
 
-
-
-for a, stock in enumerate(top_100):
-    print(a, stock)
-    if function=="gen_report":
+#get_sec_earn_dates(stocks)
+def get_sec_earn_dates(stocks):
+    from sec_edgar_downloader import Downloader
+    dl = Downloader("YourCompanyName", "your@email.com")    
+    for a, stock in enumerate(stocks):
+        if "Symbol" in stock:
+            continue
+        check = os.path.join("sec-edgar-filings",stock)
+        if os.path.exists(check):
+            continue
+        print(a,stock,"getting quarterly reports")
+        # Quarterly reports (10-Q)
+        dl.get("10-Q", stock, after="2022-01-01", before="2025-01-01")
         try:
-            #char_1000(stock)
-            reports = mine_dates(stock)
-            print("reports",reports)
-            new_dates = []
-            for date in reports:
-                new = date.replace("FILED AS OF DATE:\t\t","")
-                #print(new)
-                new_dates.append(new)
-            new_dates.sort()
-            to_out = [stock,new_dates]
-            print(stock,new_dates)
-            output.append(to_out)
+            char_1000([stock])
+        except:
+            meow = "meow"
+        print(a,stock,"getting yearly reports")
+        # Annual reports (10-K)
+        dl.get("10-K", stock, after="2022-01-01", before="2025-01-01")
+        try:
+            char_1000([stock])
         except:
             continue
-        continue
-    check = os.path.join("sec-edgar-filings",stock)
-    if os.path.exists(check):
-        continue
-    #continue
-    print(stock)
-    print(stock+" getting quarterly reports")
-    # Quarterly reports (10-Q)
-    dl.get("10-Q", stock, after="2022-01-01", before="2025-01-01")
-    try:
-        char_1000(stock)
-    except:
-        meow = "meow"
-    print(stock+" getting yearly reports")
-    # Annual reports (10-K)
-    dl.get("10-K", stock, after="2022-01-01", before="2025-01-01")
-    try:
-        char_1000(stock)
-    except:
-        continue
-#print(output)
-output.sort()
-out_text = ""
-for item in output:
-    print(item)
-    out_text=out_text+str(item)+"\n"
-out_file ='earn_dates.txt'
-with open(out_file, 'w') as file:
-    # Write text to the file
-    file.write(out_text)
-#os.startfile(out_file)
 
+#stocks = get_stock_list(csv_file)
+def get_stock_list(csv_file):
+    import csv
+    back = []
+    with open(csv_file, newline="", encoding="utf-8") as f:
+        reader = csv.reader(f)
+        for row in reader:
+            stock = row[0]
+            if "Symbol" in stock:
+                continue
+            print(stock,row)
+            back.append(stock)
+    return back
 
-
-
-
-
-#get_sec_dates(stocks):
+import os
+stocks = get_stock_list("500.csv")
+for a,stock in enumerate(stocks):
+    print(a,stock)
+#get_sec_earn_dates(stocks)
 #char_1000(stocks)
-#mine_earn_dates(stocks):
 price_history(stocks)
+#mine_earn_dates(stocks):
 #gen_analysis(stocks)
+
+
