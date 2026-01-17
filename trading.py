@@ -90,7 +90,7 @@ def price_history(stocks):
         out_name = stock+"_polygon_daily.csv"
         OUT_FILE = os.path.join(folder_history,out_name)
         if out_name in list_history:
-            print("skip",stock)
+            print("price history alrexists",stock)
             continue
         #SYMBOL="AAPL"
         FROM_DATE="2023-01-01"
@@ -197,7 +197,10 @@ def gen_trend(stocks,earnings_folder):
             continue
         earn_dates = []
         folder_stock = os.path.join(earnings_folder,stock)
-        times_of_year = os.listdir(folder_stock)
+        try:
+            times_of_year = os.listdir(folder_stock)
+        except:
+            continue
         for b,time_of_year in enumerate(times_of_year):
             folder_time_of_year = os.path.join(folder_stock,time_of_year)
             randoms = os.listdir(folder_time_of_year)
@@ -214,7 +217,6 @@ def gen_trend(stocks,earnings_folder):
                 correct_format = correct_format.replace("\t","")
                 correct_format = correct_format[:4] + "-" + correct_format[4:6] + "-" + correct_format[6:]
                 earn_dates.append(correct_format)
-        #print(a,stock,earn_dates)
         earn_dates.sort()
         print(a,stock)
         for b,date in enumerate(earn_dates):
@@ -227,6 +229,7 @@ def gen_trend(stocks,earnings_folder):
                 if "Symbol" in stock:
                     continue
                 prices.append(row)
+        #print("prices",prices)
         #print(earn_dates)
         #date,volume,vw,open,close,high,low,t,n
         last_2_years = []
@@ -237,6 +240,7 @@ def gen_trend(stocks,earnings_folder):
                 price_date = price[0]
                 if earn_date in price_date:
                     matches+=1
+                    """
                     last_2_years.append(prices[c-1])
                     last_2_years.append(price)
                     last_2_years.append(prices[c+1])
@@ -245,48 +249,48 @@ def gen_trend(stocks,earnings_folder):
                     three_days.append(price)
                     three_days.append(prices[c+1])
                     last_2_years.append(three_days)
-                    """
-                    #break
-        print("matches",matches)
-        print(len(earn_dates))
-        print("last_2_years",len(last_2_years))
-        continue                    
+                    print("three_days",three_days)
+                    break
         for b,three_days in enumerate(last_2_years):
-            print("")
-            print(three_days)
+            print(stock)
+            most = 0
+            last_vp = -1
+            for c,day_info in enumerate(three_days):
+                old_date = day_info[0]
+                new_date = old_date[0:old_date.find(" ")]
+                day_info[0] = new_date
+                vol = float(day_info[1])
+                cost = float(day_info[3])
+                vp = int(vol*cost)
+                day_info = [vp]+day_info
+              # day_info[0] = day_info[0][0:day_info.find(" ")]
+                print("date",day_info)
 
-            """
+        sys.exit()
+
+        for b,three_days in enumerate(last_2_years):
             for c,day in enumerate(three_days):
-                print(day)
-                continue
                 vol = day[1]
                 start = day[3]
                 if "volume" in vol:
                     continue
                 vp = int(float(vol)*float(start))
-                three_days[c] = [vp]+day
-                three_days[c][1] = three_days[c][1][0:three_days[c][1].find(" ")]
-                #last_2_years[b][c] = [vp]+day
+                last_2_years[b][c] = [vp]+day
+
+        for b,three_days in enumerate(last_2_years):
+            check_vp = []
+            for c,day in enumerate(three_days):
+                #check_vp.append(day[])
+                print("day",day)
 
     
 
 
 
        
-        person = {
-    "name": "Alice",
-    "age": 30,
-    "city": "New York"
-}       
-
-        """
-        #for b,day in enumerate(prices):
-         #   print(day)
 
 
-
-        #print(prices)
-               
+     
         """
     for folder_name in stocks:
         #print(folder_name)
@@ -312,16 +316,25 @@ def gen_trend(stocks,earnings_folder):
 
 
 
-import os
-stocks = get_stock_list("200.csv")
+import os,sys
+stocks = get_stock_list("50.csv")
 for a,stock in enumerate(stocks):
     print(a,stock)
-#get_sec_earn_dates(stocks)
+get_sec_earn_dates(stocks)
 sec_1000_chars(stocks)
-#price_history(stocks)
+price_history(stocks)
 #mine_earn_dates(stocks)
-#gen_trend(stocks,"sec-edgar-filings")
+gen_trend(stocks,"sec-edgar-filings")
+#gen_check()
 
-gen_check()
+
+
+"""
+        person = {
+    "name": "Alice",
+    "age": 30,
+    "city": "New York"
+}       
+"""
 
 
