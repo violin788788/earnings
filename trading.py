@@ -198,7 +198,7 @@ def price_history(stocks):
         wait_time = 15
         for a in range(0,wait_time):
             time.sleep(1)
-            print("waiting to not go over limit",a+1,wait_time)
+            print("have to wait",wait_time,"seconds",a+1)
 
 
 
