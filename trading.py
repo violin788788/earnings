@@ -192,6 +192,7 @@ def gen_check():
 def gen_trend(stocks,earnings_folder):
     import csv
     back = []
+    same_most_index = []
     for a,stock in enumerate(stocks):
         if "Symbol" in stock:
             continue
@@ -251,38 +252,53 @@ def gen_trend(stocks,earnings_folder):
                     last_2_years.append(three_days)
                     print("three_days",three_days)
                     break
+        most_index_list = []
+        #same_most_index
         for b,three_days in enumerate(last_2_years):
-            print(stock)
-            most = 0
-            last_vp = -1
+            #print(stock)
+            most_vp = 0
             for c,day_info in enumerate(three_days):
                 old_date = day_info[0]
                 new_date = old_date[0:old_date.find(" ")]
                 day_info[0] = new_date
+                vol = day_info[1]
+                if "volume" in vol:
+                    continue
                 vol = float(day_info[1])
                 cost = float(day_info[3])
                 vp = int(vol*cost)
+                if vp>most_vp:
+                    most_vp = vp
                 day_info = [vp]+day_info
+                three_days[c]=day_info
+                #last_2_years[b][c] = day_info
               # day_info[0] = day_info[0][0:day_info.find(" ")]
-                print("date",day_info)
-
-        sys.exit()
-
-        for b,three_days in enumerate(last_2_years):
-            for c,day in enumerate(three_days):
-                vol = day[1]
-                start = day[3]
-                if "volume" in vol:
-                    continue
-                vp = int(float(vol)*float(start))
-                last_2_years[b][c] = [vp]+day
-
-        for b,three_days in enumerate(last_2_years):
-            check_vp = []
-            for c,day in enumerate(three_days):
-                #check_vp.append(day[])
-                print("day",day)
-
+                #print("date",day_info)
+            most_iden = "MOST VOL"
+            not_most =  "--------"
+            for c,day_info in enumerate(three_days):
+                if most_vp in day_info:
+                    three_days[c] = [most_iden]+day_info
+                if most_vp not in day_info:
+                    three_days[c] = [not_most]+day_info
+            for c,day_info in enumerate(three_days):
+                if most_iden in day_info:
+                    index_most = three_days.index(day_info)
+                    most_index_list.append(index_most)
+                    print("index_most",index_most)
+                    break
+            for c,day_info in enumerate(three_days):
+                print("day_info",day_info)
+        print("most_index_list",most_index_list)
+        if sum(most_index_list)==0:
+            same_most_index.append([stock,most_index_list])
+        if sum(most_index_list)==8:
+            same_most_index.append([stock,most_index_list])
+        if sum(most_index_list)==16:
+            same_most_index.append([stock,most_index_list])
+    
+    print("same_most_index",same_most_index)       
+  
     
 
 
@@ -291,7 +307,7 @@ def gen_trend(stocks,earnings_folder):
 
 
      
-        """
+    """
     for folder_name in stocks:
         #print(folder_name)
         file_path = os.path.join(folder, folder_name,"full-submission.txt")
