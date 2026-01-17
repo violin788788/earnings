@@ -135,7 +135,9 @@ def price_history(stocks):
 #get_sec_earn_dates(stocks)
 def get_sec_earn_dates(stocks):
     from sec_edgar_downloader import Downloader
-    dl = Downloader("YourCompanyName", "your@email.com")    
+    dl = Downloader("YourCompanyName", "your@email.com")
+    begin_date = "2023-01-01"    
+    end_date = "2026-01-01"    
     for a, stock in enumerate(stocks):
         if "Symbol" in stock:
             continue
@@ -144,14 +146,14 @@ def get_sec_earn_dates(stocks):
             continue
         print(a,stock,"getting quarterly reports")
         # Quarterly reports (10-Q)
-        dl.get("10-Q", stock, after="2022-01-01", before="2025-01-01")
+        dl.get("10-Q", stock, after=begin_date, before=end_date)
         try:
             sec_1000_chars([stock])
         except:
             meow = "meow"
         print(a,stock,"getting yearly reports")
         # Annual reports (10-K)
-        dl.get("10-K", stock, after="2022-01-01", before="2025-01-01")
+        dl.get("10-K", stock, after=begin_date, before=end_date)
         try:
             sec_1000_chars([stock])
         except:
@@ -228,25 +230,35 @@ def gen_trend(stocks,earnings_folder):
         #print(earn_dates)
         #date,volume,vw,open,close,high,low,t,n
         last_2_years = []
+        matches = 0
         for b,earn_date in enumerate(earn_dates):
             three_days = []
             for c,price in enumerate(prices):
                 price_date = price[0]
                 if earn_date in price_date:
-                    """
-                    print("-before-",prices[c-1])
-                    print(earn_date,price)
-                    print("--after-",prices[c+1])
-                    print("")
+                    matches+=1
+                    last_2_years.append(prices[c-1])
+                    last_2_years.append(price)
+                    last_2_years.append(prices[c+1])
                     """
                     three_days.append(prices[c-1])
                     three_days.append(price)
                     three_days.append(prices[c+1])
-                    break
-            last_2_years.append(three_days)
+                    last_2_years.append(three_days)
+                    """
+                    #break
+        print("matches",matches)
+        print(len(earn_dates))
+        print("last_2_years",len(last_2_years))
+        continue                    
         for b,three_days in enumerate(last_2_years):
             print("")
+            print(three_days)
+
+            """
             for c,day in enumerate(three_days):
+                print(day)
+                continue
                 vol = day[1]
                 start = day[3]
                 if "volume" in vol:
@@ -256,13 +268,18 @@ def gen_trend(stocks,earnings_folder):
                 three_days[c][1] = three_days[c][1][0:three_days[c][1].find(" ")]
                 #last_2_years[b][c] = [vp]+day
 
-        for b,three_days in enumerate(last_2_years):
-            print("")
-            for c,day in enumerate(three_days):
-                print("day",day)
+    
 
 
 
+       
+        person = {
+    "name": "Alice",
+    "age": 30,
+    "city": "New York"
+}       
+
+        """
         #for b,day in enumerate(prices):
          #   print(day)
 
@@ -299,11 +316,11 @@ import os
 stocks = get_stock_list("200.csv")
 for a,stock in enumerate(stocks):
     print(a,stock)
-#get_sec_earn_dates(stocks)
+get_sec_earn_dates(stocks)
 #sec_1000_chars(stocks)
 #price_history(stocks)
 #mine_earn_dates(stocks)
-gen_trend(stocks,"sec-edgar-filings")
+#gen_trend(stocks,"sec-edgar-filings")
 
 gen_check()
 
