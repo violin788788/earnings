@@ -188,12 +188,11 @@ def gen_check():
 #def earnings_find(folder):
 #gen_trend(stocks,"sec-edgar-filings"):
 def gen_trend(stocks,earnings_folder):
-    #for a,stock in enumerate(stocks)
-    #get earn dates..mine data?
-    #check historical data for patterns?
-    #files = os.listdir(folder)
+    import csv
     back = []
     for a,stock in enumerate(stocks):
+        if "Symbol" in stock:
+            continue
         earn_dates = []
         folder_stock = os.path.join(earnings_folder,stock)
         times_of_year = os.listdir(folder_stock)
@@ -209,15 +208,69 @@ def gen_trend(stocks,earnings_folder):
                 begin = content.find(iden)
                 end = content.find("\n",begin)
                 earn_date = content[begin:end]
-                earn_dates.append(earn_date)
+                correct_format = earn_date.replace(iden,"")
+                correct_format = correct_format.replace("\t","")
+                correct_format = correct_format[:4] + "-" + correct_format[4:6] + "-" + correct_format[6:]
+                earn_dates.append(correct_format)
         #print(a,stock,earn_dates)
         earn_dates.sort()
         print(a,stock)
         for b,date in enumerate(earn_dates):
             print(date)
+        history_file = os.path.join("price_history",stock+"_polygon_daily.csv")
+        prices = []
+        with open(history_file, newline="", encoding="utf-8") as f:
+            reader = csv.reader(f)
+            for row in reader:
+                if "Symbol" in stock:
+                    continue
+                prices.append(row)
+        #print(earn_dates)
+        #date,volume,vw,open,close,high,low,t,n
+        last_2_years = []
+        for b,earn_date in enumerate(earn_dates):
+            three_days = []
+            for c,price in enumerate(prices):
+                price_date = price[0]
+                if earn_date in price_date:
+                    """
+                    print("-before-",prices[c-1])
+                    print(earn_date,price)
+                    print("--after-",prices[c+1])
+                    print("")
+                    """
+                    three_days.append(prices[c-1])
+                    three_days.append(price)
+                    three_days.append(prices[c+1])
+                    break
+            last_2_years.append(three_days)
+        for b,three_days in enumerate(last_2_years):
+            print("")
+            for c,day in enumerate(three_days):
+                vol = day[1]
+                start = day[3]
+                if "volume" in vol:
+                    continue
+                vp = int(float(vol)*float(start))
+                three_days[c] = [vp]+day
+                three_days[c][1] = three_days[c][1][0:three_days[c][1].find(" ")]
+                #last_2_years[b][c] = [vp]+day
 
+        for b,three_days in enumerate(last_2_years):
+            print("")
+            for c,day in enumerate(three_days):
+                print("day",day)
+
+
+
+        #for b,day in enumerate(prices):
+         #   print(day)
+
+
+
+        #print(prices)
                
-
+        """
     for folder_name in stocks:
         #print(folder_name)
         file_path = os.path.join(folder, folder_name,"full-submission.txt")
@@ -235,6 +288,7 @@ def gen_trend(stocks,earnings_folder):
         #back.append(earn33)
         back.append(earn_date)
     return back
+    """
  
 
 
