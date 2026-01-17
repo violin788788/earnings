@@ -199,9 +199,9 @@ import os
 stocks = get_stock_list("500.csv")
 for a,stock in enumerate(stocks):
     print(a,stock)
-get_sec_earn_dates(stocks)
-#sec_1000_chars(stocks)
-#price_history(stocks)
+#get_sec_earn_dates(stocks)
+sec_1000_chars(stocks)
+price_history(stocks)
 #mine_earn_dates(stocks)
 #gen_analysis(stocks)
 
