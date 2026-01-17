@@ -74,8 +74,8 @@ def mine_dates(stock):
 
 
 
-#char_1000(stocks)
-def char_1000(stocks):
+#sec_1000_chars(stocks)
+def sec_1000_chars(stocks):
     for stock in stocks:
         stock_file = os.path.join("sec-edgar-filings",stock)
         try:
@@ -91,6 +91,9 @@ def char_1000(stocks):
                 specific_file = os.path.join(dir_random,random,"full-submission.txt")
                 with open(specific_file, "r", encoding="utf-8") as f:
                     content = f.read()
+                if len(content)==1000:
+                    print(stock,random,"already 1000 chars")
+                    continue
                 content = content[:1000]  # keep only first 1000 chars
                 with open(specific_file, "w", encoding="utf-8") as f:
                     f.write(content)
@@ -164,14 +167,14 @@ def get_sec_earn_dates(stocks):
         # Quarterly reports (10-Q)
         dl.get("10-Q", stock, after="2022-01-01", before="2025-01-01")
         try:
-            char_1000([stock])
+            sec_1000_chars([stock])
         except:
             meow = "meow"
         print(a,stock,"getting yearly reports")
         # Annual reports (10-K)
         dl.get("10-K", stock, after="2022-01-01", before="2025-01-01")
         try:
-            char_1000([stock])
+            sec_1000_chars([stock])
         except:
             continue
 
@@ -189,12 +192,15 @@ def get_stock_list(csv_file):
             back.append(stock)
     return back
 
+
+
+
 import os
 stocks = get_stock_list("500.csv")
 for a,stock in enumerate(stocks):
     print(a,stock)
-#get_sec_earn_dates(stocks)
-char_1000(stocks)
+get_sec_earn_dates(stocks)
+#sec_1000_chars(stocks)
 #price_history(stocks)
 #mine_earn_dates(stocks)
 #gen_analysis(stocks)
