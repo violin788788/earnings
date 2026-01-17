@@ -192,7 +192,16 @@ def get_stock_list(csv_file):
             back.append(stock)
     return back
 
-
+def gen_check():
+    out_text = ""
+    folders = ["sec-edgar-filings","price_history"]
+    for a,folder in enumerate(folders):
+        list_dir = os.listdir(folder)
+        number = len(list_dir)
+        out_str = str(number)+"_"+str(folder)
+        out_file = out_str+".txt"
+        with open(out_file, "w", encoding="utf-8") as f:
+            f.write(out_file)
 
 
 import os
@@ -200,9 +209,10 @@ stocks = get_stock_list("500.csv")
 for a,stock in enumerate(stocks):
     print(a,stock)
 #get_sec_earn_dates(stocks)
-sec_1000_chars(stocks)
-price_history(stocks)
+#sec_1000_chars(stocks)
+#price_history(stocks)
 #mine_earn_dates(stocks)
 #gen_analysis(stocks)
+gen_check()
 
 
