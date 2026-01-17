@@ -200,19 +200,22 @@ def gen_check():
         number = len(list_dir)
         out_str = str(number)+"_"+str(folder)
         out_file = out_str+".txt"
+        print(out_str)
         with open(out_file, "w", encoding="utf-8") as f:
             f.write(out_file)
 
 
 import os
-stocks = get_stock_list("500.csv")
+stocks = get_stock_list("200.csv")
 for a,stock in enumerate(stocks):
     print(a,stock)
-#get_sec_earn_dates(stocks)
-#sec_1000_chars(stocks)
-#price_history(stocks)
+"""
+get_sec_earn_dates(stocks)
+sec_1000_chars(stocks)
+price_history(stocks)
 #mine_earn_dates(stocks)
 #gen_analysis(stocks)
+"""
 gen_check()
 
 
