@@ -33,27 +33,6 @@ top_100 = [
     "MPC", "CVS"
 ]
 
-def earnings_find(folder):
-    files = os.listdir(folder)
-    back = []
-    for folder_name in files:
-        #print(folder_name)
-        file_path = os.path.join(folder, folder_name,"full-submission.txt")
-        with open(file_path, "r", encoding="utf-8") as f:
-            content = f.read()
-        iden = "FILED AS OF DATE:"
-        begin = content.find(iden)
-        end = content.find("\n",begin)
-        earn_date = content[begin:end]
-        #print(earn_date)
-        #print(type(earn_date))
-        #earn33 = earn_date[earn_date.find("\t"):len(earn_date)]
-        #earn33 = earn33.replace("\t","")
-        #print(earn33)
-        #back.append(earn33)
-        back.append(earn_date)
-    return back
-
 
 
 
@@ -107,7 +86,7 @@ def price_history(stocks):
     API_KEY="65JaxrhDSYET1StvPxZy1KgpnttWna98"
     folder_history = "price_history"
     list_history = os.listdir(folder_history)
-    for stock in stocks:
+    for a,stock in enumerate(stocks):
         out_name = stock+"_polygon_daily.csv"
         OUT_FILE = os.path.join(folder_history,out_name)
         if out_name in list_history:
@@ -143,7 +122,7 @@ def price_history(stocks):
         df.rename(columns={"o":"open","h":"high","l":"low","c":"close","v":"volume"},inplace=True)
         df.to_csv(OUT_FILE)
         print(df.head())
-        print("Saved to",OUT_FILE,"rows:",len(df))
+        print(a,stock,"Saved to",OUT_FILE,"rows:",len(df))
         wait_time = 15
         for a in range(0,wait_time):
             time.sleep(1)
@@ -205,17 +184,73 @@ def gen_check():
             f.write(out_file)
 
 
+
+#def earnings_find(folder):
+#gen_trend(stocks,"sec-edgar-filings"):
+def gen_trend(stocks,earnings_folder):
+    #for a,stock in enumerate(stocks)
+    #get earn dates..mine data?
+    #check historical data for patterns?
+    #files = os.listdir(folder)
+    back = []
+    for a,stock in enumerate(stocks):
+        earn_dates = []
+        folder_stock = os.path.join(earnings_folder,stock)
+        times_of_year = os.listdir(folder_stock)
+        for b,time_of_year in enumerate(times_of_year):
+            folder_time_of_year = os.path.join(folder_stock,time_of_year)
+            randoms = os.listdir(folder_time_of_year)
+            for c,random in enumerate(randoms):
+                folder_random = os.path.join(folder_time_of_year,random)
+                specific_file = os.path.join(folder_random,"full-submission.txt")
+                with open(specific_file, "r", encoding="utf-8") as f:
+                    content = f.read()
+                iden = "FILED AS OF DATE:"
+                begin = content.find(iden)
+                end = content.find("\n",begin)
+                earn_date = content[begin:end]
+                earn_dates.append(earn_date)
+        #print(a,stock,earn_dates)
+        earn_dates.sort()
+        print(a,stock)
+        for b,date in enumerate(earn_dates):
+            print(date)
+
+               
+
+    for folder_name in stocks:
+        #print(folder_name)
+        file_path = os.path.join(folder, folder_name,"full-submission.txt")
+        with open(file_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        iden = "FILED AS OF DATE:"
+        begin = content.find(iden)
+        end = content.find("\n",begin)
+        earn_date = content[begin:end]
+        #print(earn_date)
+        #print(type(earn_date))
+        #earn33 = earn_date[earn_date.find("\t"):len(earn_date)]
+        #earn33 = earn33.replace("\t","")
+        #print(earn33)
+        #back.append(earn33)
+        back.append(earn_date)
+    return back
+ 
+
+
+
+
+
 import os
 stocks = get_stock_list("200.csv")
 for a,stock in enumerate(stocks):
     print(a,stock)
-"""
-get_sec_earn_dates(stocks)
-sec_1000_chars(stocks)
-price_history(stocks)
+#get_sec_earn_dates(stocks)
+#sec_1000_chars(stocks)
+#price_history(stocks)
 #mine_earn_dates(stocks)
-#gen_analysis(stocks)
-"""
+gen_trend(stocks,"sec-edgar-filings")
+
 gen_check()
 
 
