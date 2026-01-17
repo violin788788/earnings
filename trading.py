@@ -271,12 +271,10 @@ def gen_trend(stocks,earnings_folder):
                     most_vp = vp
                 day_info = [vp]+day_info
                 three_days[c]=day_info
-                #last_2_years[b][c] = day_info
-              # day_info[0] = day_info[0][0:day_info.find(" ")]
-                #print("date",day_info)
             most_iden = "MOST VOL"
             not_most =  "--------"
             for c,day_info in enumerate(three_days):
+                #.insert?
                 if most_vp in day_info:
                     three_days[c] = [most_iden]+day_info
                 if most_vp not in day_info:
@@ -290,13 +288,9 @@ def gen_trend(stocks,earnings_folder):
             for c,day_info in enumerate(three_days):
                 print("day_info",day_info)
         print("most_index_list",most_index_list)
-        if sum(most_index_list)==0:
+        all_same = all(x == most_index_list[0] for x in most_index_list)
+        if all_same==True:
             same_most_index.append([stock,most_index_list])
-        if sum(most_index_list)==8:
-            same_most_index.append([stock,most_index_list])
-        if sum(most_index_list)==16:
-            same_most_index.append([stock,most_index_list])
-    
     print("same_most_index",same_most_index)       
   
     
@@ -333,7 +327,7 @@ def gen_trend(stocks,earnings_folder):
 
 
 import os,sys
-stocks = get_stock_list("50.csv")
+stocks = get_stock_list("200.csv")
 for a,stock in enumerate(stocks):
     print(a,stock)
 get_sec_earn_dates(stocks)
