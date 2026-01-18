@@ -190,6 +190,9 @@ def gen_check():
 #def earnings_find(folder):
 #gen_trend(stocks,"sec-edgar-filings"):
 def gen_trend(stocks,earnings_folder):
+    #from datetime import datetime
+    from datetime import datetime, time
+    #from datetime import time
     import csv
     back = []
     same_most_index = []
@@ -210,18 +213,15 @@ def gen_trend(stocks,earnings_folder):
                 specific_file = os.path.join(folder_random,"full-submission.txt")
                 with open(specific_file, "r", encoding="utf-8") as f:
                     content = f.read()
-                iden = "FILED AS OF DATE:"
+                iden = "<ACCEPTANCE-DATETIME>"
                 begin = content.find(iden)
                 end = content.find("\n",begin)
                 earn_date = content[begin:end]
-                correct_format = earn_date.replace(iden,"")
-                correct_format = correct_format.replace("\t","")
-                correct_format = correct_format[:4] + "-" + correct_format[4:6] + "-" + correct_format[6:]
-                earn_dates.append(correct_format)
+                earn_dates.append(earn_date)
         earn_dates.sort()
         print(a,stock)
-        for b,date in enumerate(earn_dates):
-            print(date)
+        #for b,date in enumerate(earn_dates):
+        #    print(date)
         history_file = os.path.join("price_history",stock+"_polygon_daily.csv")
         prices = []
         with open(history_file, newline="", encoding="utf-8") as f:
@@ -235,7 +235,35 @@ def gen_trend(stocks,earnings_folder):
         #date,volume,vw,open,close,high,low,t,n
         last_2_years = []
         matches = 0
+        print(a,stock)
         for b,earn_date in enumerate(earn_dates):
+            end_iden = ">"
+            numbers = earn_date[earn_date.find(end_iden):len(earn_date)]
+            numbers = numbers.replace(end_iden,"")
+            timestamp_release = datetime.strptime(numbers, "%Y%m%d%H%M%S")
+            timestamp_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            time_of_release = timestamp_release.time()#time_of_release = time_of_release.time()  
+            #before_or_after = "?"
+            if time_of_release >= time(16, 0):
+                before_or_after = "AMC"
+            elif time_of_release  < time(9, 30):
+                before_or_after = "BMO"
+            else:
+                before_or_after = "during market??"
+            print("earn_date =",earn_date)
+            print("numbers =",numbers)
+            print("time_of_release =",timestamp_release)
+            print(before_or_after,timestamp_release)
+            print("")
+
+        continue
+
+        for b,earn_date in enumerate(earn_dates):
+            print(earn_date)
+            correct_format = earn_date.replace(iden,"")
+            correct_format = correct_format.replace("\t","")
+            correct_format = correct_format[:4] + "-" + correct_format[4:6] + "-" + correct_format[6:]
+            earn_date = correct_format
             three_days = []
             for c,price in enumerate(prices):
                 price_date = price[0]
@@ -327,14 +355,16 @@ def gen_trend(stocks,earnings_folder):
 
 
 import os,sys
-stocks = get_stock_list("200.csv")
+stocks = get_stock_list("500.csv")
+stocks = stocks[0:100]
 for a,stock in enumerate(stocks):
     print(a,stock)
-get_sec_earn_dates(stocks)
-sec_1000_chars(stocks)
-price_history(stocks)
-#mine_earn_dates(stocks)
+#get_sec_earn_dates(stocks)
+#sec_1000_chars(stocks)
+#price_history(stocks)
 gen_trend(stocks,"sec-edgar-filings")
+#mine_earn_dates(stocks)
+
 #gen_check()
 
 
