@@ -231,9 +231,15 @@ def gen_trend(stocks,earnings_folder):
         last_2_years = []
         matches = 0
         print(a,stock)
-        for b,earn_date in enumerate(earn_dates):
+        last_2_years = {}
+        for b,sec_code in enumerate(earn_dates):
+            
+
+            print("last_2_years",last_2_years)
             end_iden = ">"
-            numbers = earn_date[earn_date.find(end_iden):len(earn_date)]
+            last_2_years[sec_code] = sec_code
+            
+            numbers = sec_code[sec_code.find(end_iden):len(sec_code)]
             numbers = numbers.replace(end_iden,"")
             timestamp_release = datetime.strptime(numbers, "%Y%m%d%H%M%S")
             timestamp_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -268,6 +274,8 @@ def gen_trend(stocks,earnings_folder):
             print("dates_to_gather",dates_to_gather)
             print("")
             specific_2_days = {
+                "sec_timestamp": earn_date,
+                "sec_formatted": timestamp_str,
                 "timestamp_release": timestamp_release,
                 "before_or_after": before_or_after,
                 "before_trading": dates_to_gather[0],
@@ -276,7 +284,11 @@ def gen_trend(stocks,earnings_folder):
             last_2_years.append(specific_2_days)
                 
         for b,specific_2_days in enumerate(last_2_years):
-            print(specific_2_days)
+            for key, value in specific_2_days.items():
+                print(key, ":", value)
+            print("")
+
+            #print(specific_2_days)
             
             #for c,specific_data in enumerate(specific_2_days):
             #    print(specific_data)
