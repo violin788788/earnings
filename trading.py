@@ -220,8 +220,6 @@ def gen_trend(stocks,earnings_folder):
                 earn_dates.append(earn_date)
         earn_dates.sort()
         print(a,stock)
-        #for b,date in enumerate(earn_dates):
-        #    print(date)
         history_file = os.path.join("price_history",stock+"_polygon_daily.csv")
         prices = []
         with open(history_file, newline="", encoding="utf-8") as f:
@@ -230,9 +228,6 @@ def gen_trend(stocks,earnings_folder):
                 if "Symbol" in stock:
                     continue
                 prices.append(row)
-        #print("prices",prices)
-        #print(earn_dates)
-        #date,volume,vw,open,close,high,low,t,n
         last_2_years = []
         matches = 0
         print(a,stock)
@@ -243,19 +238,57 @@ def gen_trend(stocks,earnings_folder):
             timestamp_release = datetime.strptime(numbers, "%Y%m%d%H%M%S")
             timestamp_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             time_of_release = timestamp_release.time()#time_of_release = time_of_release.time()  
-            #before_or_after = "?"
+            after_market_close = "AMC"
+            before_market_open = "BMO"
+            during_market = "--during market??"
             if time_of_release >= time(16, 0):
-                before_or_after = "AMC"
+                before_or_after = after_market_close
             elif time_of_release  < time(9, 30):
-                before_or_after = "BMO"
+                before_or_after = before_market_open
             else:
-                before_or_after = "during market??"
+                before_or_after = during_market
+            from datetime import datetime, timedelta
+            dates_to_gather = []
+            date_of_release = timestamp_release.date()
+            dates_to_gather.append(date_of_release)
+            if before_or_after == after_market_close:
+                dates_to_gather.append(date_of_release + timedelta(days=1))
+            elif before_or_after == before_market_open:
+                dates_to_gather.append(date_of_release - timedelta(days=1))
+            else:
+                dates_to_gather.append(during_market)
+            #for c,date in enumerate(dates_to_gather):
+            #    print("date",date)
+            #timestamp_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")    
+            #last_2_years.append(dates_to_gather)
             print("earn_date =",earn_date)
             print("numbers =",numbers)
             print("time_of_release =",timestamp_release)
             print(before_or_after,timestamp_release)
+            print("dates_to_gather",dates_to_gather)
             print("")
+            specific_2_days = {
+                "timestamp_release": timestamp_release,
+                "before_or_after": before_or_after,
+                "before_trading": dates_to_gather[0],
+                "after_trading": dates_to_gather[1],
+            }         
+            last_2_years.append(specific_2_days)
+                
+        for b,specific_2_days in enumerate(last_2_years):
+            print(specific_2_days)
+            
+            #for c,specific_data in enumerate(specific_2_days):
+            #    print(specific_data)
+            """
+            for c,date in enumerate(dates):
+                #print("date",date)
+                string = date.strftime("%Y-%m-%d")
+                
+                print(c,string)   
+                """
 
+        #print(last_2_years)
         continue
 
         for b,earn_date in enumerate(earn_dates):
