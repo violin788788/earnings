@@ -5,37 +5,6 @@ didnt_work=[
 ]
 #,"BRKA","ANTM"
 
-
-top_100 = [
-    "C","MS","SO","DUK","BLK",
-    "MET","TSM",
-    "NVDA", "AAPL", "GOOGL", "MSFT", "AMZN",
-    "AVGO", "META","TSLA",
-    "LLY", "WMT", "JPM", "V", "JNJ",
-    "XOM", "UNH", "BAC", "MA", "NVDA",  # NVDA appears high and repeated for emphasis
-    "ORCL", "VZ", "HD", "PEP", "KO",
-    "PG", "COST", "CRM", "ADBE", "CSCO",
-    "TMO", "CVX", "ABBV", "ACN", "NKE",
-    "MDT", "AVY", "UPS", "SCHW",
-    "TMUS", "DHR", "TXN", "LOW",
-    "NEE", "RTX", "HON", "COP", "IBM",
-    "QCOM", "INTU", "AMGN", "SBUX", "GE",
-    "PLD", "AXP", "CME", "BKNG", "MMM",
-    "SPGI", "CI",
-    "CCI", "ISRG", "GILD", "BSX",
-    "FISV", "KMB", "CL", "ETN",
-    "ZTS", "ADP", "AON", "PGR",
-    "EL", "TJX", "CB", "FITB", "KEY",
-    "HBAN", "MCO", "HUM", "ICE", "ALL",
-    "PSA", "KMI", "CNC", "RSG", "ETR",
-    "PEG", "XEL", "AWK", "ECL", "KR",
-    "DG", "HLT", "D", "EOG", "OXY",
-    "MPC", "CVS"
-]
-
-
-
-
 def mine_dates(stock):
     stock_file = os.path.join("sec-edgar-filings",stock)
     folder_yearly = os.path.join(stock_file,"10-K")
@@ -220,75 +189,149 @@ def gen_trend(stocks,earnings_folder):
                 earn_dates.append(earn_date)
         earn_dates.sort()
         print(a,stock)
-        history_file = os.path.join("price_history",stock+"_polygon_daily.csv")
-        prices = []
-        with open(history_file, newline="", encoding="utf-8") as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if "Symbol" in stock:
-                    continue
-                prices.append(row)
-        last_2_years = []
-        matches = 0
-        print(a,stock)
         last_2_years = {}
         count = 0
-        for b,sec_code in enumerate(earn_dates):
+        for b,sec_datetime in enumerate(earn_dates):
             end_iden = ">"            
-            numbers = sec_code[sec_code.find(end_iden):len(sec_code)]
-            numbers = numbers.replace(end_iden,"")
-            timestamp_release = datetime.strptime(numbers, "%Y%m%d%H%M%S")
-            timestamp_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            sec_numbers = sec_datetime[sec_datetime.find(end_iden):len(sec_datetime)]
+            sec_numbers = sec_numbers.replace(end_iden,"")
+            timestamp_release = datetime.strptime(sec_numbers, "%Y%m%d%H%M%S")
+            timestamp_str = timestamp_release.strftime("%Y-%m-%d %H:%M:%S")
             time_of_release = timestamp_release.time()#time_of_release = time_of_release.time()  
             after_market_close = "AMC"
             before_market_open = "BMO"
             during_market = "--during market??"
             if time_of_release >= time(16, 0):
-                before_or_after = after_market_close
+                BMO_or_AMC = after_market_close
             elif time_of_release  < time(9, 30):
-                before_or_after = before_market_open
+                BMO_or_AMC = before_market_open
             else:
-                before_or_after = during_market
+                BMO_or_AMC = during_market
             from datetime import datetime, timedelta
             dates_to_gather = []
             date_of_release = timestamp_release.date()
-            dates_to_gather.append(date_of_release)
-            if before_or_after == after_market_close:
+            dates_to_gather = []
+            if BMO_or_AMC == after_market_close:
+                dates_to_gather.append(date_of_release)
                 dates_to_gather.append(date_of_release + timedelta(days=1))
-            elif before_or_after == before_market_open:
+            elif BMO_or_AMC == before_market_open:
+                dates_to_gather.append(date_of_release)
                 dates_to_gather.append(date_of_release - timedelta(days=1))
             else:
                 dates_to_gather.append(during_market)
+                dates_to_gather.append(during_market)
             count = count+1
             days_2 = {}
-            days_2["sec_code"]=sec_code
-            days_2["numbers"]=numbers
+            days_2["sec_datetime"]=sec_datetime
+            days_2["sec_numbers"]=sec_numbers
             days_2["timestamp_release"]=timestamp_release
             days_2["timestamp_str"]=timestamp_str
             days_2["time_of_release"]=time_of_release    
-            days_2["before_or_after"]=before_or_after
-            days_2["before_trading"]=dates_to_gather[0]
-            days_2["after_trading"]=dates_to_gather[1]    
+            days_2["BMO_or_AMC"]=BMO_or_AMC
+            days_2["session_before"]=str(dates_to_gather[0])
+            days_2["session_after"]=str(dates_to_gather[1])  
             #last_2_years.append(days_2)
-            last_2_years[count]=days_2
-        
+            last_2_years[stock+"-"+timestamp_str]=days_2
         #print(last_2_years)        
+        history_file = os.path.join("price_history",stock+"_polygon_daily.csv")
+        array_prices = []
+        #load prices as dictionary,code up
+        #load prices as dictionary,code up
+        #load prices as dictionary,code up
+        with open(history_file, newline="", encoding="utf-8") as f:
+            reader = csv.reader(f)
+            for row in reader:
+                if "Symbol" in stock:
+                    continue
+                array_prices.append(row)
+        heading_order = []
+        heading_order.append("date")
+        heading_order.append("volume")
+        heading_order.append("volume_weighted_price")
+        heading_order.append("open")
+        heading_order.append("high")
+        heading_order.append("low")
+        heading_order.append("close")
+        count = 0
+        price_history = {}
+        for b,day_info in enumerate(array_prices):
+            increase = -1
+            conversion = {}
+            for c,header in enumerate(heading_order):
+                increase=increase+1
+                conversion[header] = day_info[increase]
+            price_history[day_info[0]]=conversion
+        #print(price_history)
+        """
+        for key, day_info in price_history.items():
+            for key, specific_data in day_info.items():
+                print(key,specific_data)
+        for key, day_info in price_history.items():
+        """
+        #print("last_2_years",last_2_years)
+
+
+        for key, data1 in last_2_years.items():
+            for key,day_info in price_history.items():
+                date = str(day_info['date'])
+                if "volume" in day_info["volume"]:
+                    continue
+                if data1['session_before'] in date:
+                    vol_pri = int(float(day_info["volume"])*float(day_info["open"]))
+                    new = {}
+                    new["vol_pri"] = vol_pri
+                    data1['session_before'] = str(data1['session_before'])
+                    data1['session_before'] = new
+            print("data1",data1)
+            print("")
+                
         
-        for key, value in last_2_years.items():
-            print(key)
-            for key, value in value.items():    
-                print(key, ":", value)
-
-        for key, value in last_2_years.items():
-            print(key,value)
-            before_trading = last_2_years[key]["before_trading"]
-            after_trading = last_2_years[key]["after_trading"]
-
-            print("before_trading",before_trading)
-            print("after_trading",after_trading)
-            
 
         continue
+        
+
+
+        """
+        for b,header in enumerate(heading_order):
+            price_history[header] = day_info[count]
+
+        for v,day_info in enumerate(prices):
+            price_history["date"] = day_info[0]
+            price_history["volume"] = day_info[1]
+            price_history["volume_weighted_price"] = day_info[2]
+            price_history["open"] = day_info[3]
+        
+
+        for key, value in last_2_years.items():
+            
+            print("key",key)
+            print("value",value)
+            print("")
+            
+            
+
+            session_before = str(value['session_before'])
+            session_after = str(value['session_after'])
+            for b,day_info in enumerate(prices):
+                day_check = day_info[0]
+                #print(day_check)
+                #continue
+                #day_check = day_info[0]
+                if session_before in day_check:
+                    print(session_before,day_info)
+                if session_after in day_check:
+                    print(session_after,day_info)
+
+
+            
+            session_before = 
+            for key, value in value.items():    
+                print(key, ":", value)
+               
+        
+
+
+
 
         for b,earn_date in enumerate(earn_dates):
             print(earn_date)
@@ -301,11 +344,11 @@ def gen_trend(stocks,earnings_folder):
                 price_date = price[0]
                 if earn_date in price_date:
                     matches+=1
-                    """
+                    
                     last_2_years.append(prices[c-1])
                     last_2_years.append(price)
                     last_2_years.append(prices[c+1])
-                    """
+                  
                     three_days.append(prices[c-1])
                     three_days.append(price)
                     three_days.append(prices[c+1])
@@ -361,7 +404,7 @@ def gen_trend(stocks,earnings_folder):
 
 
      
-    """
+    
     for folder_name in stocks:
         #print(folder_name)
         file_path = os.path.join(folder, folder_name,"full-submission.txt")
