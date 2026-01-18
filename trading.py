@@ -232,13 +232,9 @@ def gen_trend(stocks,earnings_folder):
         matches = 0
         print(a,stock)
         last_2_years = {}
+        count = 0
         for b,sec_code in enumerate(earn_dates):
-            
-
-            print("last_2_years",last_2_years)
-            end_iden = ">"
-            last_2_years[sec_code] = sec_code
-            
+            end_iden = ">"            
             numbers = sec_code[sec_code.find(end_iden):len(sec_code)]
             numbers = numbers.replace(end_iden,"")
             timestamp_release = datetime.strptime(numbers, "%Y%m%d%H%M%S")
@@ -263,44 +259,35 @@ def gen_trend(stocks,earnings_folder):
                 dates_to_gather.append(date_of_release - timedelta(days=1))
             else:
                 dates_to_gather.append(during_market)
-            #for c,date in enumerate(dates_to_gather):
-            #    print("date",date)
-            #timestamp_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")    
-            #last_2_years.append(dates_to_gather)
-            print("earn_date =",earn_date)
-            print("numbers =",numbers)
-            print("time_of_release =",timestamp_release)
-            print(before_or_after,timestamp_release)
-            print("dates_to_gather",dates_to_gather)
-            print("")
-            specific_2_days = {
-                "sec_timestamp": earn_date,
-                "sec_formatted": timestamp_str,
-                "timestamp_release": timestamp_release,
-                "before_or_after": before_or_after,
-                "before_trading": dates_to_gather[0],
-                "after_trading": dates_to_gather[1],
-            }         
-            last_2_years.append(specific_2_days)
-                
-        for b,specific_2_days in enumerate(last_2_years):
-            for key, value in specific_2_days.items():
+            count = count+1
+            days_2 = {}
+            days_2["sec_code"]=sec_code
+            days_2["numbers"]=numbers
+            days_2["timestamp_release"]=timestamp_release
+            days_2["timestamp_str"]=timestamp_str
+            days_2["time_of_release"]=time_of_release    
+            days_2["before_or_after"]=before_or_after
+            days_2["before_trading"]=dates_to_gather[0]
+            days_2["after_trading"]=dates_to_gather[1]    
+            #last_2_years.append(days_2)
+            last_2_years[count]=days_2
+        
+        #print(last_2_years)        
+        
+        for key, value in last_2_years.items():
+            print(key)
+            for key, value in value.items():    
                 print(key, ":", value)
-            print("")
 
-            #print(specific_2_days)
+        for key, value in last_2_years.items():
+            print(key,value)
+            before_trading = last_2_years[key]["before_trading"]
+            after_trading = last_2_years[key]["after_trading"]
+
+            print("before_trading",before_trading)
+            print("after_trading",after_trading)
             
-            #for c,specific_data in enumerate(specific_2_days):
-            #    print(specific_data)
-            """
-            for c,date in enumerate(dates):
-                #print("date",date)
-                string = date.strftime("%Y-%m-%d")
-                
-                print(c,string)   
-                """
 
-        #print(last_2_years)
         continue
 
         for b,earn_date in enumerate(earn_dates):
