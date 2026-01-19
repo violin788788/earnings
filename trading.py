@@ -155,6 +155,12 @@ def gen_check():
             f.write(out_file)
 
 
+#gap_to_procent(close_price,open_price)
+def gap_to_procent(before_price,after_price):
+    gap = float(after_price/before_price)
+    gap = (gap-1)*100
+    gap = (int(gap*100))/100
+    return(gap)
 
 #def earnings_find(folder):
 #gen_trend(stocks,"sec-edgar-filings"):
@@ -165,6 +171,8 @@ def gen_trend(stocks,earnings_folder):
     import csv
     back = []
     same_most_index = []
+    gappers = {}
+    #gappers = []
     for a,stock in enumerate(stocks):
         if "Symbol" in stock:
             continue
@@ -215,8 +223,8 @@ def gen_trend(stocks,earnings_folder):
                 dates_to_gather.append(date_of_release)
                 dates_to_gather.append(date_of_release + timedelta(days=1))
             elif BMO_or_AMC == before_market_open:
-                dates_to_gather.append(date_of_release)
                 dates_to_gather.append(date_of_release - timedelta(days=1))
+                dates_to_gather.append(date_of_release)
             else:
                 dates_to_gather.append(during_market)
                 dates_to_gather.append(during_market)
@@ -232,12 +240,8 @@ def gen_trend(stocks,earnings_folder):
             days_2["session_after"]=str(dates_to_gather[1])  
             #last_2_years.append(days_2)
             last_2_years[stock+"-"+timestamp_str]=days_2
-        #print(last_2_years)        
         history_file = os.path.join("price_history",stock+"_polygon_daily.csv")
         array_prices = []
-        #load prices as dictionary,code up
-        #load prices as dictionary,code up
-        #load prices as dictionary,code up
         with open(history_file, newline="", encoding="utf-8") as f:
             reader = csv.reader(f)
             for row in reader:
@@ -261,172 +265,90 @@ def gen_trend(stocks,earnings_folder):
                 increase=increase+1
                 conversion[header] = day_info[increase]
             price_history[day_info[0]]=conversion
-        #print(price_history)
-        """
-        for key, day_info in price_history.items():
-            for key, specific_data in day_info.items():
-                print(key,specific_data)
-        for key, day_info in price_history.items():
-        """
-        #print("last_2_years",last_2_years)
-
-
-        for key, data1 in last_2_years.items():
-            for key,day_info in price_history.items():
-                date = str(day_info['date'])
-                if "volume" in day_info["volume"]:
+        for release_date, earnings_info in last_2_years.items():
+            session_before = last_2_years[release_date]["session_before"]
+            session_after = last_2_years[release_date]["session_after"]
+            for price_date, day_info in price_history.items():
+                volume = day_info["volume"]
+                open_price = day_info["open"]
+                if "volume" in volume:
                     continue
-                if data1['session_before'] in date:
-                    vol_pri = int(float(day_info["volume"])*float(day_info["open"]))
-                    new = {}
+                vol_pri = int(float(volume)*float(open_price))
+                new = {}
+                if session_before in price_date:
                     new["vol_pri"] = vol_pri
-                    data1['session_before'] = str(data1['session_before'])
-                    data1['session_before'] = new
-            print("data1",data1)
+                    for info,day_info in day_info.items():
+                        new[info] = day_info
+                    last_2_years[release_date]["before_data"] = new
+                if session_after in price_date:
+                    new["vol_pri"] = vol_pri
+                    for info,day_info in day_info.items():
+                        new[info] = day_info
+                    last_2_years[release_date]["after_data"] = new
+        #gaps = {}
+        gaps = []
+        moves_up = []
+        moves_down = []
+        moves = []
+        for release_date, earnings_info in last_2_years.items():
+            try:
+                close_day_before = float(earnings_info["before_data"]["close"])
+            except:
+                continue
+            try:
+                price_open = float(earnings_info["after_data"]["open"])
+            except:
+                continue
+            gap = gap_to_procent(close_day_before,price_open)
+            price_high = float(earnings_info["after_data"]["high"])
+            price_low = float(earnings_info["after_data"]["low"])
+            close_day_of = float(earnings_info["after_data"]["close"])
+            move_up = gap_to_procent(price_open,price_high)
+            move_down = gap_to_procent(price_open,price_low)
+            move_down = gap_to_procent(price_open,price_low)
+            move_close = gap_to_procent(price_open,close_day_of)
+            last_2_years[release_date]["gap"] = gap
+            gappers.append([stock,gap,move_up,move_down,move_close])
+            gaps.append(gap)
+            moves_up.append(move_up)
+            moves_down.append(move_down)
+        last_2_years["gaps"]=gaps
+        for key, earnings_info in last_2_years.items():
+            if type(earnings_info)==dict:
+                for data,specific in earnings_info.items():
+                    print(data,"=",specific)
             print("")
-                
-        
-
+            if type(earnings_info)!=dict:
+                print(key,"=",earnings_info)
+        #gappers[stock]=moves   
+    for a,val in enumerate(gappers):
+        print(val)
         continue
+        for b,val2 in enumerate(val):
+            print(val2)
+
+        """  
+    for key, gap_info in gappers.items():
+        if len(gap_info)==0:
+            continue
+        print("new",key,"=",gap_info)
+    
+
         
-
-
-        """
-        for b,header in enumerate(heading_order):
-            price_history[header] = day_info[count]
-
-        for v,day_info in enumerate(prices):
-            price_history["date"] = day_info[0]
-            price_history["volume"] = day_info[1]
-            price_history["volume_weighted_price"] = day_info[2]
-            price_history["open"] = day_info[3]
-        
-
-        for key, value in last_2_years.items():
             
-            print("key",key)
-            print("value",value)
+                
             print("")
-            
-            
-
-            session_before = str(value['session_before'])
-            session_after = str(value['session_after'])
-            for b,day_info in enumerate(prices):
-                day_check = day_info[0]
-                #print(day_check)
-                #continue
-                #day_check = day_info[0]
-                if session_before in day_check:
-                    print(session_before,day_info)
-                if session_after in day_check:
-                    print(session_after,day_info)
-
-
-            
-            session_before = 
-            for key, value in value.items():    
-                print(key, ":", value)
-               
-        
-
-
-
-
-        for b,earn_date in enumerate(earn_dates):
-            print(earn_date)
-            correct_format = earn_date.replace(iden,"")
-            correct_format = correct_format.replace("\t","")
-            correct_format = correct_format[:4] + "-" + correct_format[4:6] + "-" + correct_format[6:]
-            earn_date = correct_format
-            three_days = []
-            for c,price in enumerate(prices):
-                price_date = price[0]
-                if earn_date in price_date:
-                    matches+=1
-                    
-                    last_2_years.append(prices[c-1])
-                    last_2_years.append(price)
-                    last_2_years.append(prices[c+1])
-                  
-                    three_days.append(prices[c-1])
-                    three_days.append(price)
-                    three_days.append(prices[c+1])
-                    last_2_years.append(three_days)
-                    print("three_days",three_days)
-                    break
-        most_index_list = []
-        #same_most_index
-        for b,three_days in enumerate(last_2_years):
-            #print(stock)
-            most_vp = 0
-            for c,day_info in enumerate(three_days):
-                old_date = day_info[0]
-                new_date = old_date[0:old_date.find(" ")]
-                day_info[0] = new_date
-                vol = day_info[1]
-                if "volume" in vol:
-                    continue
-                vol = float(day_info[1])
-                cost = float(day_info[3])
-                vp = int(vol*cost)
-                if vp>most_vp:
-                    most_vp = vp
-                day_info = [vp]+day_info
-                three_days[c]=day_info
-            most_iden = "MOST VOL"
-            not_most =  "--------"
-            for c,day_info in enumerate(three_days):
-                #.insert?
-                if most_vp in day_info:
-                    three_days[c] = [most_iden]+day_info
-                if most_vp not in day_info:
-                    three_days[c] = [not_most]+day_info
-            for c,day_info in enumerate(three_days):
-                if most_iden in day_info:
-                    index_most = three_days.index(day_info)
-                    most_index_list.append(index_most)
-                    print("index_most",index_most)
-                    break
-            for c,day_info in enumerate(three_days):
-                print("day_info",day_info)
-        print("most_index_list",most_index_list)
-        all_same = all(x == most_index_list[0] for x in most_index_list)
-        if all_same==True:
-            same_most_index.append([stock,most_index_list])
-    print("same_most_index",same_most_index)       
-  
-    
-
-
-
-       
-
-
-     
-    
-    for folder_name in stocks:
-        #print(folder_name)
-        file_path = os.path.join(folder, folder_name,"full-submission.txt")
-        with open(file_path, "r", encoding="utf-8") as f:
-            content = f.read()
-        iden = "FILED AS OF DATE:"
-        begin = content.find(iden)
-        end = content.find("\n",begin)
-        earn_date = content[begin:end]
-        #print(earn_date)
-        #print(type(earn_date))
-        #earn33 = earn_date[earn_date.find("\t"):len(earn_date)]
-        #earn33 = earn33.replace("\t","")
-        #print(earn33)
-        #back.append(earn33)
-        back.append(earn_date)
-    return back
-    """
- 
-
-
-
+            print("release_date",release_date)
+            try:
+                for data,specific in earnings_info.items():
+                    print(data,"=",specific)
+            except:
+                continue
+        print("gaps",last_2_years["gaps"])
+        print("------------------")
+        print(last_2_years)
+        print("------------------")
+        """
 
 
 import os,sys
@@ -439,17 +361,6 @@ for a,stock in enumerate(stocks):
 #price_history(stocks)
 gen_trend(stocks,"sec-edgar-filings")
 #mine_earn_dates(stocks)
-
 #gen_check()
-
-
-
-"""
-        person = {
-    "name": "Alice",
-    "age": 30,
-    "city": "New York"
-}       
-"""
 
 
