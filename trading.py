@@ -317,7 +317,7 @@ def gen_trend(stocks,earnings_folder):
         
 import os,sys,json
 stocks = get_stock_list("500.csv")
-stocks = stocks[0:100]
+stocks = stocks[0:200]
 for a,stock in enumerate(stocks):
     print(a,stock)
 get_sec_earn_dates(stocks)
