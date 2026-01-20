@@ -59,7 +59,7 @@ def price_history(stocks):
         out_name = stock+"_polygon_daily.csv"
         OUT_FILE = os.path.join(folder_history,out_name)
         if out_name in list_history:
-            print("price history alrexists",stock)
+            print("price history already exists",stock)
             continue
         #SYMBOL="AAPL"
         FROM_DATE="2023-01-01"
@@ -274,31 +274,35 @@ def gen_trend(stocks,earnings_folder):
                     if session_after in date:
                         #print(session_after,date,price_info)
                         info["after_info"] = price_info
-                try:
-                    close_day_before = float(info["before_info"]["close"])
-                    price_open = float(info["after_info"]["open"]) 
-                    price_high = float(info["after_info"]["high"]) 
-                    price_low = float(info["after_info"]["low"]) 
-                    close_dayof = float(info["after_info"]["close"]) 
-                    gap = gap_to_procent(close_day_before,price_open)
-                    move_up = gap_to_procent(price_open,price_high)
-                    move_down = gap_to_procent(price_open,price_low)
-                    move_close = gap_to_procent(price_open,close_dayof)
-                    vp_before = int(float(info["before_info"]["volume"])*float(info["before_info"]["close"]))   
-                    vp_after = int(float(info["after_info"]["volume"])*float(info["after_info"]["open"]))
-                    if vp_after<vp_before:
-                        continue
+                print(info)
+                for key1,val1 in info:
+                    print(key1,val1)
 
-                    info["vp_before"] = vp_before
-                    info["vp_after"] = vp_after
 
-                    info["gap"] = {"gap":gap,"price_open":price_open,"close_day_before":close_day_before}
-                    info["move_up"] = {"move_up":move_up,"price_high":price_high,"price_open":price_open}
-                    info["move_down"] = {"move_down":move_down,"price_low":price_low,"price_open":price_open}
-                    info["move_close"] = {"move_close":move_close,"close_dayof":close_dayof,"price_open":price_open}
-                    #info["moves"]=moves
-                except:
-                    continue
+                close_day_before = float(info["before_info"]["close"])
+                price_open = float(info["after_info"]["open"]) 
+                price_high = float(info["after_info"]["high"]) 
+                price_low = float(info["after_info"]["low"]) 
+                close_dayof = float(info["after_info"]["close"]) 
+                gap = gap_to_procent(close_day_before,price_open)
+                move_up = gap_to_procent(price_open,price_high)
+                move_down = gap_to_procent(price_open,price_low)
+                move_close = gap_to_procent(price_open,close_dayof)
+                vp_before = int(float(info["before_info"]["volume"])*float(info["before_info"]["close"]))   
+                vp_after = int(float(info["after_info"]["volume"])*float(info["after_info"]["open"]))
+                #if vp_after<vp_before:
+                #    continue
+
+                info["vp_before"] = vp_before
+                info["vp_after"] = vp_after
+
+                info["gap"] = {"gap":gap,"price_open":price_open,"close_day_before":close_day_before}
+                info["move_up"] = {"move_up":move_up,"price_high":price_high,"price_open":price_open}
+                info["move_down"] = {"move_down":move_down,"price_low":price_low,"price_open":price_open}
+                info["move_close"] = {"move_close":move_close,"close_dayof":close_dayof,"price_open":price_open}
+                #info["moves"]=moves
+                #except:
+                #    continue
                 earnings_info[info["date"]] = info
         master[stock] = earnings_info         
     for stock,info in master.items():
@@ -308,15 +312,17 @@ def gen_trend(stocks,earnings_folder):
                 print(stock,key3,"=",val3)
             print("")
     print("")
+    with open("trading.json", "w", encoding="utf-8") as f:
+        json.dump(master, f, indent=4)
         
-import os,sys
+import os,sys,json
 stocks = get_stock_list("500.csv")
 stocks = stocks[0:100]
 for a,stock in enumerate(stocks):
     print(a,stock)
-#get_sec_earn_dates(stocks)
-#sec_1000_chars(stocks)
-#price_history(stocks)
+get_sec_earn_dates(stocks)
+sec_1000_chars(stocks)
+price_history(stocks)
 gen_trend(stocks,"sec-edgar-filings")
 #mine_earn_dates(stocks)
 #gen_check()
