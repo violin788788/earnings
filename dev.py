@@ -1,7 +1,8 @@
-one = {}
-one["meow"] = "meow"
 
-two = {}
-two["bark"] = one
 
-print(two)
+the = {	"meow":"cat",
+	   	"bark":"dog",
+	}
+
+the.sort()
+print(the)

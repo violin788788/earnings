@@ -190,16 +190,12 @@ def load_history(file):
 
 
 
-#def earnings_find(folder):
-#gen_trend(stocks,"sec-edgar-filings"):
 def gen_trend(stocks,earnings_folder):
-    #from datetime import datetime, timedelta
-    #from datetime import datetime
     from datetime import datetime, time,timedelta
-    #from datetime import time
     back = []
     same_most_index = []
     master = {}
+    old_stock="--initiate--"
     for a,stock in enumerate(stocks):
         if "Symbol" in stock:
             continue
@@ -214,35 +210,42 @@ def gen_trend(stocks,earnings_folder):
         earnings_info = {}
         locations = []
         counter = 0
+        stock_earnings = {}
+        stock_info = {}
+        aggregate = {}
+        earn_list = {}
         for b,folder_time in enumerate(list_stock_folder):
+            earn_list[folder_time] = {}
             randoms = os.listdir(os.path.join(earnings_folder,stock,folder_time))
             for c,random in enumerate(randoms):
                 info = {}
                 specific = os.path.join(earnings_folder,stock,folder_time,random,"full-submission.txt")
                 #print("specific",specific)
                 counter = counter+1
-                info["file"] = specific
                 with open(specific, "r", encoding="utf-8") as f:
                     content = f.read()
                 iden = "<ACCEPTANCE-DATETIME>"
                 begin = content.find(iden)
                 end = content.find("\n",begin)
                 acceptance_timestamp = content[begin:end]
+            
+                aggregate[acceptance_timestamp] = {}
+
+                #new_timestamp = {acceptance_timestamp:{}}
+                #print(stock,new_timestamp)
+                stock_earnings[acceptance_timestamp]=acceptance_timestamp
                 info["acceptance_timestamp"] = acceptance_timestamp
                 begin_iden = ">"
                 begin_location = acceptance_timestamp.find(begin_iden)+len(begin_iden)
                 end_location = len(acceptance_timestamp)
                 extracted = acceptance_timestamp[begin_location:end_location]
-                info["extracted"] = extracted
+                #stock_info[acceptance_timestamp]=acceptance_timestamp
                 converted =extracted[0:4]+"-"+extracted[4:6]+"-"+extracted[6:8]+" "+extracted[8:10]+":"+extracted[10:12]+":"+extracted[12:14]
-                info["converted"] = converted
-                info["date"] = converted[0:converted.find(" ")]
-                info["time"] = converted[converted.find(" ")+1:len(converted)]
-                #date_object = datetime.strptime(info["date"], "%Y-%m-%d")
-                #time_object = datetime.strptime(info["time"], "%H:%M:%S")
+                str_date = converted[0:converted.find(" ")]
                 object_release = datetime.strptime(converted, "%Y-%m-%d %H:%M:%S")
-                object_date = datetime.strptime(info["date"], "%Y-%m-%d")
-                time_of_release = object_release.time()#time_of_release = time_of_release.time()  
+                object_date = datetime.strptime(str_date, "%Y-%m-%d")
+                time_of_release = object_release.time()#time_of_release = time_of_release.time() 
+                str_time_of_release = time_of_release.strftime("%H:%M:%S")
                 before_market_open = "BMO"
                 after_market_close = "AMC"
                 during_market = "during market?"
@@ -264,65 +267,91 @@ def gen_trend(stocks,earnings_folder):
                 except:
                     continue
                     skip = "skip"
+
+
+                
+
+                if stock!=old_stock:    
+                    master[stock] = {}
+                    old_stock = stock    
+                
+                new = {}
+                new["acceptance_timestamp"]=acceptance_timestamp
+                new["extracted"]=extracted
+                new["converted"]=converted
+                new["str_time_of_release"]=str_time_of_release
+                new["BMO_or_AMC"]=BMO_or_AMC
+                new["session_before"]=session_before
+                new["session_after"]=session_after
+                new["folder_time"] = folder_time
+                new["random"] = random
+                master[stock][str_date]=new
+
+                continue
+
                 info["BMO_or_AMC"] = BMO_or_AMC
                 info["session_before"] = session_before
                 info["session_after"] = session_after
+                price_info_day_before = ""
+                price_info_day_after = ""
                 for date,price_info in history.items():
                     if session_before in date:
                         #print(session_before,date,price_info)
                         info["before_info"] = price_info
+                        price_info_day_before = price_info
                     if session_after in date:
                         #print(session_after,date,price_info)
                         info["after_info"] = price_info
+                        price_info_day_after = price_info
                 print(info)
-                for key1,val1 in info:
-                    print(key1,val1)
+                #for key1,val1 in info:
+                #    print(key1,val1)
+                try:
+                    close_day_before = float(info["before_info"]["close"])
+                    price_open = float(info["after_info"]["open"]) 
+                    price_high = float(info["after_info"]["high"]) 
+                    price_low = float(info["after_info"]["low"]) 
+                    close_dayof = float(info["after_info"]["close"]) 
+                    gap = gap_to_procent(close_day_before,price_open)
+                    move_up = gap_to_procent(price_open,price_high)
+                    move_down = gap_to_procent(price_open,price_low)
+                    move_close = gap_to_procent(price_open,close_dayof)
+                    vp_before = int(float(info["before_info"]["volume"])*float(info["before_info"]["close"]))   
+                    vp_after = int(float(info["after_info"]["volume"])*float(info["after_info"]["open"]))
+                    #if vp_after<vp_before:
+                    #    continue
 
+                    info["vp_before"] = vp_before
+                    info["vp_after"] = vp_after
 
-                close_day_before = float(info["before_info"]["close"])
-                price_open = float(info["after_info"]["open"]) 
-                price_high = float(info["after_info"]["high"]) 
-                price_low = float(info["after_info"]["low"]) 
-                close_dayof = float(info["after_info"]["close"]) 
-                gap = gap_to_procent(close_day_before,price_open)
-                move_up = gap_to_procent(price_open,price_high)
-                move_down = gap_to_procent(price_open,price_low)
-                move_close = gap_to_procent(price_open,close_dayof)
-                vp_before = int(float(info["before_info"]["volume"])*float(info["before_info"]["close"]))   
-                vp_after = int(float(info["after_info"]["volume"])*float(info["after_info"]["open"]))
-                #if vp_after<vp_before:
-                #    continue
+                    info["gap"] = {"gap":gap,"price_open":price_open,"close_day_before":close_day_before}
+                    info["move_up"] = {"move_up":move_up,"price_high":price_high,"price_open":price_open}
+                    info["move_down"] = {"move_down":move_down,"price_low":price_low,"price_open":price_open}
+                    info["move_close"] = {"move_close":move_close,"close_dayof":close_dayof,"price_open":price_open}
+                    #info["moves"]=moves
+                    #except:
+                    #    continue
+                    earnings_info[str_date] = info
+                except:
+                    continue
 
-                info["vp_before"] = vp_before
-                info["vp_after"] = vp_after
-
-                info["gap"] = {"gap":gap,"price_open":price_open,"close_day_before":close_day_before}
-                info["move_up"] = {"move_up":move_up,"price_high":price_high,"price_open":price_open}
-                info["move_down"] = {"move_down":move_down,"price_low":price_low,"price_open":price_open}
-                info["move_close"] = {"move_close":move_close,"close_dayof":close_dayof,"price_open":price_open}
-                #info["moves"]=moves
-                #except:
-                #    continue
-                earnings_info[info["date"]] = info
-        master[stock] = earnings_info         
-    for stock,info in master.items():
-        for key2,val2 in info.items():
-            for key3,val3 in val2.items():
-                #if key3=="gap":
-                print(stock,key3,"=",val3)
-            print("")
-    print("")
-    with open("trading.json", "w", encoding="utf-8") as f:
+   
+    out_json ="trading.json" 
+    with open(out_json, "w", encoding="utf-8") as f:
         json.dump(master, f, indent=4)
-        
+    os.startfile(out_json)
+    
+
+
+#--------run stuff--------------------------------------------------------------------#            
 import os,sys,json
 stocks = get_stock_list("500.csv")
 stocks = stocks[0:200]
 for a,stock in enumerate(stocks):
     print(a,stock)
-get_sec_earn_dates(stocks)
-sec_1000_chars(stocks)
-price_history(stocks)
+#get_sec_earn_dates(stocks)
+#sec_1000_chars(stocks)
+#price_history(stocks)
 gen_trend(stocks,"sec-edgar-filings")
 #mine_earn_dates(stocks)
 #gen_check()
