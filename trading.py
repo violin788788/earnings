@@ -228,9 +228,7 @@ def gen_trend(stocks,earnings_folder):
                 begin = content.find(iden)
                 end = content.find("\n",begin)
                 acceptance_timestamp = content[begin:end]
-
                 aggregate[acceptance_timestamp] = {}
-
                 #new_timestamp = {acceptance_timestamp:{}}
                 #print(stock,new_timestamp)
                 stock_earnings[acceptance_timestamp]=acceptance_timestamp
@@ -357,15 +355,14 @@ def gen_trend(stocks,earnings_folder):
 
 #--------run stuff--------------------------------------------------------------------#
 import os,sys,json,platform,shutil
+how_many_stocks = 250
 stocks = get_stock_list("500.csv")
-stocks = stocks[0:200]
+stocks = stocks[0:how_many_stocks]
 for a,stock in enumerate(stocks):
     print(a,stock)
-#get_sec_earn_dates(stocks)
-#sec_1000_chars(stocks)
-#price_history(stocks)
+get_sec_earn_dates(stocks)
+sec_1000_chars(stocks)
+price_history(stocks)
 gen_trend(stocks,"sec-edgar-filings")
-#mine_earn_dates(stocks)
-#gen_check()
 
 
