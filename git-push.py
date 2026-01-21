@@ -7,7 +7,7 @@ system_type = platform.system()
 print(type(system_type))
 print(system_type)
 if "Linux" in system_type:
-    print("do not open chrome")
+    print("chrome will not open..running on linux..")
 
 #print system type
 
@@ -42,7 +42,7 @@ except subprocess.CalledProcessError as e:
 sys.exit()
 
 if "Linux" in system_type:
-    print("do not open chrome")
+    print("chrome will not open..running on linux..")
     sys.exit()
 
 url = r"https://github.com/violin788788/"+directory_name
