@@ -105,8 +105,8 @@ def price_history(stocks):
 def get_sec_earn_dates(stocks):
     from sec_edgar_downloader import Downloader
     dl = Downloader("YourCompanyName", "your@email.com")
-    begin_date = "2023-01-01"    
-    end_date = "2026-01-01"    
+    begin_date = "2023-01-01"
+    end_date = "2026-01-01"
     for a, stock in enumerate(stocks):
         if "Symbol" in stock:
             continue
@@ -228,7 +228,7 @@ def gen_trend(stocks,earnings_folder):
                 begin = content.find(iden)
                 end = content.find("\n",begin)
                 acceptance_timestamp = content[begin:end]
-            
+
                 aggregate[acceptance_timestamp] = {}
 
                 #new_timestamp = {acceptance_timestamp:{}}
@@ -244,7 +244,7 @@ def gen_trend(stocks,earnings_folder):
                 str_date = converted[0:converted.find(" ")]
                 object_release = datetime.strptime(converted, "%Y-%m-%d %H:%M:%S")
                 object_date = datetime.strptime(str_date, "%Y-%m-%d")
-                time_of_release = object_release.time()#time_of_release = time_of_release.time() 
+                time_of_release = object_release.time()#time_of_release = time_of_release.time()
                 str_time_of_release = time_of_release.strftime("%H:%M:%S")
                 before_market_open = "BMO"
                 after_market_close = "AMC"
@@ -269,12 +269,12 @@ def gen_trend(stocks,earnings_folder):
                     skip = "skip"
 
 
-                
 
-                if stock!=old_stock:    
+
+                if stock!=old_stock:
                     master[stock] = {}
-                    old_stock = stock    
-                
+                    old_stock = stock
+
                 new = {}
                 new["acceptance_timestamp"]=acceptance_timestamp
                 new["extracted"]=extracted
@@ -308,15 +308,15 @@ def gen_trend(stocks,earnings_folder):
                 #    print(key1,val1)
                 try:
                     close_day_before = float(info["before_info"]["close"])
-                    price_open = float(info["after_info"]["open"]) 
-                    price_high = float(info["after_info"]["high"]) 
-                    price_low = float(info["after_info"]["low"]) 
-                    close_dayof = float(info["after_info"]["close"]) 
+                    price_open = float(info["after_info"]["open"])
+                    price_high = float(info["after_info"]["high"])
+                    price_low = float(info["after_info"]["low"])
+                    close_dayof = float(info["after_info"]["close"])
                     gap = gap_to_procent(close_day_before,price_open)
                     move_up = gap_to_procent(price_open,price_high)
                     move_down = gap_to_procent(price_open,price_low)
                     move_close = gap_to_procent(price_open,close_dayof)
-                    vp_before = int(float(info["before_info"]["volume"])*float(info["before_info"]["close"]))   
+                    vp_before = int(float(info["before_info"]["volume"])*float(info["before_info"]["close"]))
                     vp_after = int(float(info["after_info"]["volume"])*float(info["after_info"]["open"]))
                     #if vp_after<vp_before:
                     #    continue
@@ -335,16 +335,28 @@ def gen_trend(stocks,earnings_folder):
                 except:
                     continue
 
-   
-    out_json ="trading.json" 
+    file_name = "earnings"
+    out_json =file_name+".json"
     with open(out_json, "w", encoding="utf-8") as f:
         json.dump(master, f, indent=4)
-    os.startfile(out_json)
-    
+    out_html = file_name+".html"
+    with open(out_html, "w", encoding="utf-8") as f:
+        f.write("<pre>")
+        f.write(json.dumps(master, indent=4))
+        f.write("</pre>")
+    copied_to_templates = "/home/info34/mysite/templates/"+file_name+".html"
+    shutil.copy(out_html, copied_to_templates)
+    #"/mysite/templates/earnings.html"
 
 
-#--------run stuff--------------------------------------------------------------------#            
-import os,sys,json
+    #/home/info34/mysite/templates39% full – 199.6 MB of your 512.0 MB quota More Info Open Ba
+
+    os_name = platform.system()
+    if "Windows" in os_name:
+        os.startfile(out_json)
+
+#--------run stuff--------------------------------------------------------------------#
+import os,sys,json,platform,shutil
 stocks = get_stock_list("500.csv")
 stocks = stocks[0:200]
 for a,stock in enumerate(stocks):
