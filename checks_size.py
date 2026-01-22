@@ -9,7 +9,7 @@ def folder_size(path):
 dir_earnings = "sec-edgar-filings"
 dir_prices = "price_history"
 
-"""
+
 folder_sizes = []
 deleted = []
 list_files = os.listdir(os.path.join(dir_earnings))
@@ -26,7 +26,8 @@ folder_sizes.sort()
 for a,stock in enumerate(folder_sizes):
     print(stock)
 print("deleted",deleted)
-"""
+
+sys.exit()
 
 folder_sizes = []
 deleted = []
