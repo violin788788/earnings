@@ -6,14 +6,6 @@ print(cwd)
 system_type = platform.system()
 print(type(system_type))
 print(system_type)
-if "Linux" in system_type:
-    print("chrome will not open..running on linux..")
-
-#print system type
-
-
-
-#"git push origin main --force"
 
 # Define the Git commands
 commands = [
@@ -32,12 +24,19 @@ with open('token.txt', 'r') as file:
 repo_url = f"https://{token}@github.com/violin788788/"+directory_name+".git"
 
 # Step 3: Execute the Git command (force push)
+
+print("ok..pushing to github..")
+
 try:
     # Run the git push command with the token for authentication
     subprocess.run(["git", "push", repo_url, "main", "--force"], check=True)
     print("Force push to GitHub was successful!")
 except subprocess.CalledProcessError as e:
     print(f"Error occurred: {e}")
+
+
+
+
 
 sys.exit()
 
