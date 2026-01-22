@@ -358,8 +358,33 @@ def gen_trend(stocks,earnings_folder):
                 except:
                     continue
     print("missing_dates","=",len(missing_dates))
+    
+    #write_file(file_name,text)
+    def write_file(file_name,text):
+        import os
+        with open(file_name, "w", encoding="utf-8") as f:
+            f.write(text)
+        os.startfile(file_name)
 
-    file_name = "earnings"
+    html_table = ""
+    for stock,stock_data in master.items():
+        for date,excess_data in stock_data.items():
+            sec_timestamp = excess_data['acceptance_timestamp']
+
+            html_table = html_table+date+"--"+sec_timestamp
+            html_table = html_table+"<br>"
+
+            #print(excess_data)
+
+    #sys.exit()
+    
+    file_name = "table.html"
+    write_file(file_name,html_table)    
+
+    sys.exit()
+
+    
+    file_name = "earnings_data"
     out_json =file_name+".json"
     with open(out_json, "w", encoding="utf-8") as f:
         json.dump(master, f, indent=4)
