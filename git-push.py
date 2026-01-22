@@ -4,8 +4,8 @@ directory_name = os.path.basename(cwd)
 system_type = platform.system()
 
 print("")
-print("directory_name","=",directory_name)
 print("cwd","=",cwd)
+print("directory_name","=",directory_name)
 print("system_type","=",system_type)
 
 print("ok..pushing to github..")
