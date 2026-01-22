@@ -370,9 +370,11 @@ def gen_trend(stocks,earnings_folder):
     for stock,stock_data in master.items():
         for date,excess_data in stock_data.items():
             sec_timestamp = excess_data['acceptance_timestamp']
+            print("sec_timestamp",sec_timestamp)
 
-            html_table = html_table+date+"--"+sec_timestamp
-            html_table = html_table+"<br>"
+            html_table = html_table+date+"--"+sec_timestamp+"<br>"
+
+
 
             #print(excess_data)
 
