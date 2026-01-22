@@ -7,6 +7,8 @@ system_type = platform.system()
 print(type(system_type))
 print(system_type)
 
+print("ok..pushing to github..")
+
 # Define the Git commands
 commands = [
     "git add -A",
@@ -24,8 +26,6 @@ with open('token.txt', 'r') as file:
 repo_url = f"https://{token}@github.com/violin788788/"+directory_name+".git"
 
 # Step 3: Execute the Git command (force push)
-
-print("ok..pushing to github..")
 
 try:
     # Run the git push command with the token for authentication
