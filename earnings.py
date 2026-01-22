@@ -376,7 +376,8 @@ def gen_trend(stocks,earnings_folder):
 
     import html
 
-    html_sec_datetimes = ""
+    html_sec_datetimes = "From SEC Edgar database"
+    html_sec_datetimes+= ", literally the second earnings reports were sent from public companies into the SEC database<br>"
 
     for stock, stock_data in master.items():
         for date, excess_data in stock_data.items():
