@@ -203,6 +203,7 @@ def gen_trend(stocks,earnings_folder):
     same_most_index = []
     master = {}
     old_stock="--initiate--"
+    missing_dates = []
     for a,stock in enumerate(stocks):
         if "Symbol" in stock:
             continue
@@ -308,11 +309,10 @@ def gen_trend(stocks,earnings_folder):
                 print('new["prices_before"]',new["prices_before"])
                 print('new["prices_after"]',new["prices_after"])
                 """
-                if not_found not in new['prices_after']:
-                    print(new['prices_after']['open'])
-
                 
                 if not_found==new["prices_before"] or not_found==new["prices_after"]:
+                    if stock not in missing_dates:
+                        missing_dates.append(stock)
                     continue
                 
                 #print('new["prices_after"]["open"]',new["prices_after"]["open"])
@@ -357,6 +357,7 @@ def gen_trend(stocks,earnings_folder):
                     earnings_info[str_date] = info
                 except:
                     continue
+    print("missing_dates","=",len(missing_dates))
 
     file_name = "earnings"
     out_json =file_name+".json"
