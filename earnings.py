@@ -196,6 +196,19 @@ def load_history(file):
 
 
 
+#write_file(file_name,text)
+def write_file(file_name,text):
+    with open(file_name, "w", encoding="utf-8") as f:
+        f.write(text)
+    print(file_name,"created")
+
+#copy_file(src,dst)
+def copy_file(src,dst):
+    import shutil
+    shutil.copy(src,dst)
+    print("file copied from",src,"to",dst)
+
+
 
 def gen_trend(stocks,earnings_folder):
     from datetime import datetime, time,timedelta
@@ -357,33 +370,32 @@ def gen_trend(stocks,earnings_folder):
                     earnings_info[str_date] = info
                 except:
                     continue
+
     print("missing_dates","=",len(missing_dates))
 
-    #write_file(file_name,text)
-    def write_file(file_name,text):
-        import os
-        with open(file_name, "w", encoding="utf-8") as f:
-            f.write(text)
+
+    import html
 
     html_sec_datetimes = ""
-    for stock,stock_data in master.items():
-        for date,excess_data in stock_data.items():
+
+    for stock, stock_data in master.items():
+        for date, excess_data in stock_data.items():
             sec_timestamp = str(excess_data['acceptance_timestamp'])
-            print("sec_timestamp",sec_timestamp)
 
-            html_sec_datetimes = html_sec_datetimes+date+"--"+sec_timestamp+"<br>"
+            # ESCAPE IT
+            sec_timestamp = html.escape(sec_timestamp)
 
-
-
-
-            #print(excess_data)
-
-
+            next_br = "\n" + date + "--" + sec_timestamp + "<br>"
+            html_sec_datetimes += next_br
 
     file_to_create = "sec_datetimes.html"
-    write_file(file_to_create,html_sec_datetimes)
+    write_file(file_to_create, html_sec_datetimes)
+    src = file_to_create
+    dst = os.path.join("/home/info34/mysite/templates",file_to_create)
+    copy_file(src,dst)
 
     sys.exit()
+
 
     #os.startfile(file_name)
 
