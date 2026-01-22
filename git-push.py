@@ -5,7 +5,6 @@ system_type = platform.system()
 
 print("directory_name","=",directory_name)
 print("cwd","=",cwd)
-print("type(system_type)","=",type(system_type))
 print("system_type","=",system_type)
 
 print("ok..pushing to github..")
