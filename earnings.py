@@ -162,6 +162,13 @@ def gap_to_procent(price_before,price_after):
     gap = (int(gap*100))/100
     return(gap)
 
+#gap = convert_to_procent(gap)
+def convert_to_procent(value):
+    value = value-1
+    value = int(value*10000)
+    value = float(value/100)
+    return value
+
 #history = load_history(stock)
 def load_history(file):
     import csv
@@ -196,6 +203,7 @@ def gen_trend(stocks,earnings_folder):
     same_most_index = []
     master = {}
     old_stock="--initiate--"
+    missing_dates = []
     for a,stock in enumerate(stocks):
         if "Symbol" in stock:
             continue
@@ -277,7 +285,7 @@ def gen_trend(stocks,earnings_folder):
                 new["session_after"]=session_after
                 new["folder_time"] = folder_time
                 new["random"] = random
-                master[stock][str_date]=new
+                master[stock][stock+"-"+str_date]=new
                 price_info_day_before = ""
                 price_info_day_after = ""
                 found_begin = 0
@@ -296,22 +304,28 @@ def gen_trend(stocks,earnings_folder):
                     new["prices_before"] = not_found
                 if found_after==0:
                     new["prices_after"] = not_found
+                    """
                 print("")
                 print('new["prices_before"]',new["prices_before"])
                 print('new["prices_after"]',new["prices_after"])
-                if not_found not in new['prices_after']:
-                    print(new['prices_after']['open'])
+                """
 
-                continue
-
-                try:
-                    gap = float(new["prices_after"]["open"])/float(new["prices_before"]["close"])
-                    move_up = float(new["prices_after"]["high"])/float(new["prices_after"]["open"])
-                    move_down = float(new["prices_after"]["low"])/float(new["prices_after"]["open"])
-                    move_close = float(new["prices_after"]["close"])/float(new["prices_after"]["open"])
-                except:
+                if not_found==new["prices_before"] or not_found==new["prices_after"]:
+                    if stock not in missing_dates:
+                        missing_dates.append(stock)
                     continue
 
+                #print('new["prices_after"]["open"]',new["prices_after"]["open"])
+
+                new['gap'] = float(new["prices_after"]["open"])/float(new["prices_before"]["close"])
+                new['move_up'] = float(new["prices_after"]["high"])/float(new["prices_after"]["open"])
+                new['move_down'] = float(new["prices_after"]["low"])/float(new["prices_after"]["open"])
+                new['move_close'] = float(new["prices_after"]["close"])/float(new["prices_after"]["open"])
+
+                new['gap'] = convert_to_procent(new['gap'])
+                new['move_up'] = convert_to_procent( new['move_up'])
+                new['move_down'] = convert_to_procent(new['move_down'])
+                new['move_close'] =convert_to_procent(new['move_close'])
 
                 continue
 
@@ -343,8 +357,38 @@ def gen_trend(stocks,earnings_folder):
                     earnings_info[str_date] = info
                 except:
                     continue
+    print("missing_dates","=",len(missing_dates))
 
-    file_name = "earnings"
+    #write_file(file_name,text)
+    def write_file(file_name,text):
+        import os
+        with open(file_name, "w", encoding="utf-8") as f:
+            f.write(text)
+
+    html_sec_datetimes = ""
+    for stock,stock_data in master.items():
+        for date,excess_data in stock_data.items():
+            sec_timestamp = str(excess_data['acceptance_timestamp'])
+            print("sec_timestamp",sec_timestamp)
+
+            html_sec_datetimes = html_sec_datetimes+date+"--"+sec_timestamp+"<br>"
+
+
+
+
+            #print(excess_data)
+
+
+
+    file_to_create = "sec_datetimes.html"
+    write_file(file_to_create,html_sec_datetimes)
+
+    sys.exit()
+
+    #os.startfile(file_name)
+
+
+    file_name = "earnings_data"
     out_json =file_name+".json"
     with open(out_json, "w", encoding="utf-8") as f:
         json.dump(master, f, indent=4)
@@ -353,21 +397,17 @@ def gen_trend(stocks,earnings_folder):
         f.write("<pre>")
         f.write(json.dumps(master, indent=4))
         f.write("</pre>")
-
     os_name = platform.system()
-
-    if ":inux" in os_name:
+    if "Linux" in os_name:
         copied_to_templates = "/home/info34/mysite/templates/"+file_name+".html"
+
     if "Windows" in os_name:
         #copied_to_templates = "/home/info34/mysite/templates/"+file_name+".html"
         copied_to_templates = r"A:\Users\-\0code\info34\mysite\templates\\"+file_name+".html"
 
     shutil.copy(out_html, copied_to_templates)
     #"/mysite/templates/earnings.html"
-
-
     #/home/info34/mysite/templates39% full – 199.6 MB of your 512.0 MB quota More Info Open Ba
-
     os_name = platform.system()
     if "Windows" in os_name:
         os.startfile(out_json)
@@ -375,14 +415,16 @@ def gen_trend(stocks,earnings_folder):
 
 #--------run stuff--------------------------------------------------------------------#
 import os,sys,json,platform,shutil
-how_many_stocks = 300
 stocks = get_stock_list("500.csv")
+
+how_many_stocks = 250
+
 stocks = stocks[0:how_many_stocks]
 for a,stock in enumerate(stocks):
     print(a,stock)
-get_sec_earn_dates(stocks)
-sec_1000_chars(stocks)
-price_history(stocks)
+#get_sec_earn_dates(stocks)
+#sec_1000_chars(stocks)
+#price_history(stocks)
 gen_trend(stocks,"sec-edgar-filings")
 
 
