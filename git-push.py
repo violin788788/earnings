@@ -7,7 +7,7 @@ print("")
 print("cwd","=",cwd)
 print("directory_name","=",directory_name)
 print("system_type","=",system_type)
-
+print("")
 print("ok..pushing to github..")
 
 # Define the Git commands
