@@ -301,7 +301,7 @@ def gen_trend(stocks,earnings_folder):
                 print('new["prices_after"]',new["prices_after"])
                 if not_found not in new['prices_after']:
                     print(new['prices_after']['open'])
-            
+
                 continue
 
                 try:
@@ -311,8 +311,8 @@ def gen_trend(stocks,earnings_folder):
                     move_close = float(new["prices_after"]["close"])/float(new["prices_after"]["open"])
                 except:
                     continue
-                
-            
+
+
                 continue
 
                 try:
@@ -353,9 +353,9 @@ def gen_trend(stocks,earnings_folder):
         f.write("<pre>")
         f.write(json.dumps(master, indent=4))
         f.write("</pre>")
-    
+
     os_name = platform.system()
-    
+
     if ":inux" in os_name:
         copied_to_templates = "/home/info34/mysite/templates/"+file_name+".html"
     if "Windows" in os_name:
@@ -375,14 +375,14 @@ def gen_trend(stocks,earnings_folder):
 
 #--------run stuff--------------------------------------------------------------------#
 import os,sys,json,platform,shutil
-how_many_stocks = 200
+how_many_stocks = 250
 stocks = get_stock_list("500.csv")
 stocks = stocks[0:how_many_stocks]
 for a,stock in enumerate(stocks):
     print(a,stock)
-#get_sec_earn_dates(stocks)
-#sec_1000_chars(stocks)
-#price_history(stocks)
+get_sec_earn_dates(stocks)
+sec_1000_chars(stocks)
+price_history(stocks)
 gen_trend(stocks,"sec-edgar-filings")
 
 
