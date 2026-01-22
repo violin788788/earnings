@@ -9,6 +9,7 @@ print("directory_name","=",directory_name)
 print("system_type","=",system_type)
 print("")
 print("ok..pushing to github..")
+print("")
 
 # Define the Git commands
 commands = [
