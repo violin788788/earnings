@@ -3,6 +3,7 @@ cwd = os.getcwd()
 directory_name = os.path.basename(cwd)
 system_type = platform.system()
 
+print("")
 print("directory_name","=",directory_name)
 print("cwd","=",cwd)
 print("system_type","=",system_type)
