@@ -228,16 +228,10 @@ def gen_trend(stocks,earnings_folder):
                 begin = content.find(iden)
                 end = content.find("\n",begin)
                 acceptance_timestamp = content[begin:end]
-                aggregate[acceptance_timestamp] = {}
-                #new_timestamp = {acceptance_timestamp:{}}
-                #print(stock,new_timestamp)
-                stock_earnings[acceptance_timestamp]=acceptance_timestamp
-                info["acceptance_timestamp"] = acceptance_timestamp
                 begin_iden = ">"
                 begin_location = acceptance_timestamp.find(begin_iden)+len(begin_iden)
                 end_location = len(acceptance_timestamp)
                 extracted = acceptance_timestamp[begin_location:end_location]
-                #stock_info[acceptance_timestamp]=acceptance_timestamp
                 converted =extracted[0:4]+"-"+extracted[4:6]+"-"+extracted[6:8]+" "+extracted[8:10]+":"+extracted[10:12]+":"+extracted[12:14]
                 str_date = converted[0:converted.find(" ")]
                 object_release = datetime.strptime(converted, "%Y-%m-%d %H:%M:%S")
@@ -284,26 +278,43 @@ def gen_trend(stocks,earnings_folder):
                 new["folder_time"] = folder_time
                 new["random"] = random
                 master[stock][str_date]=new
-
-                continue
-
-                info["BMO_or_AMC"] = BMO_or_AMC
-                info["session_before"] = session_before
-                info["session_after"] = session_after
                 price_info_day_before = ""
                 price_info_day_after = ""
+                found_begin = 0
+                found_after = 0
                 for date,price_info in history.items():
                     if session_before in date:
-                        #print(session_before,date,price_info)
-                        info["before_info"] = price_info
-                        price_info_day_before = price_info
+                        new["prices_before"] = price_info
+                        found_begin = 1
+                        #print("prices_before",price_info)
                     if session_after in date:
-                        #print(session_after,date,price_info)
-                        info["after_info"] = price_info
-                        price_info_day_after = price_info
-                print(info)
-                #for key1,val1 in info:
-                #    print(key1,val1)
+                        new["prices_after"] = price_info
+                        found_after = 1
+                        #print("prices_after",price_info)
+                not_found = "-----not found===--"
+                if found_begin==0:
+                    new["prices_before"] = not_found
+                if found_after==0:
+                    new["prices_after"] = not_found
+                print("")
+                print('new["prices_before"]',new["prices_before"])
+                print('new["prices_after"]',new["prices_after"])
+                if not_found not in new['prices_after']:
+                    print(new['prices_after']['open'])
+            
+                continue
+
+                try:
+                    gap = float(new["prices_after"]["open"])/float(new["prices_before"]["close"])
+                    move_up = float(new["prices_after"]["high"])/float(new["prices_after"]["open"])
+                    move_down = float(new["prices_after"]["low"])/float(new["prices_after"]["open"])
+                    move_close = float(new["prices_after"]["close"])/float(new["prices_after"]["open"])
+                except:
+                    continue
+                
+            
+                continue
+
                 try:
                     close_day_before = float(info["before_info"]["close"])
                     price_open = float(info["after_info"]["open"])
@@ -342,7 +353,15 @@ def gen_trend(stocks,earnings_folder):
         f.write("<pre>")
         f.write(json.dumps(master, indent=4))
         f.write("</pre>")
-    copied_to_templates = "/home/info34/mysite/templates/"+file_name+".html"
+    
+    os_name = platform.system()
+    
+    if ":inux" in os_name:
+        copied_to_templates = "/home/info34/mysite/templates/"+file_name+".html"
+    if "Windows" in os_name:
+        #copied_to_templates = "/home/info34/mysite/templates/"+file_name+".html"
+        copied_to_templates = r"A:\Users\-\0code\info34\mysite\templates\\"+file_name+".html"
+
     shutil.copy(out_html, copied_to_templates)
     #"/mysite/templates/earnings.html"
 
@@ -352,17 +371,18 @@ def gen_trend(stocks,earnings_folder):
     os_name = platform.system()
     if "Windows" in os_name:
         os.startfile(out_json)
+        os.startfile(copied_to_templates)
 
 #--------run stuff--------------------------------------------------------------------#
 import os,sys,json,platform,shutil
-how_many_stocks = 250
+how_many_stocks = 200
 stocks = get_stock_list("500.csv")
 stocks = stocks[0:how_many_stocks]
 for a,stock in enumerate(stocks):
     print(a,stock)
-get_sec_earn_dates(stocks)
-sec_1000_chars(stocks)
-price_history(stocks)
+#get_sec_earn_dates(stocks)
+#sec_1000_chars(stocks)
+#price_history(stocks)
 gen_trend(stocks,"sec-edgar-filings")
 
 
