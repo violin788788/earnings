@@ -375,8 +375,10 @@ def gen_trend(stocks,earnings_folder):
 
 #--------run stuff--------------------------------------------------------------------#
 import os,sys,json,platform,shutil
-how_many_stocks = 300
 stocks = get_stock_list("500.csv")
+
+how_many_stocks = 250
+
 stocks = stocks[0:how_many_stocks]
 for a,stock in enumerate(stocks):
     print(a,stock)
