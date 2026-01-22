@@ -162,6 +162,13 @@ def gap_to_procent(price_before,price_after):
     gap = (int(gap*100))/100
     return(gap)
 
+#gap = convert_to_procent(gap)
+def convert_to_procent(value):
+    value = value-1
+    value = int(value*10000)
+    value = float(value/100)
+    return value
+
 #history = load_history(stock)
 def load_history(file):
     import csv
@@ -296,23 +303,30 @@ def gen_trend(stocks,earnings_folder):
                     new["prices_before"] = not_found
                 if found_after==0:
                     new["prices_after"] = not_found
+                    """
                 print("")
                 print('new["prices_before"]',new["prices_before"])
                 print('new["prices_after"]',new["prices_after"])
+                """
                 if not_found not in new['prices_after']:
                     print(new['prices_after']['open'])
 
-                continue
-
-                try:
-                    gap = float(new["prices_after"]["open"])/float(new["prices_before"]["close"])
-                    move_up = float(new["prices_after"]["high"])/float(new["prices_after"]["open"])
-                    move_down = float(new["prices_after"]["low"])/float(new["prices_after"]["open"])
-                    move_close = float(new["prices_after"]["close"])/float(new["prices_after"]["open"])
-                except:
+                
+                if not_found==new["prices_before"] or not_found==new["prices_after"]:
                     continue
+                
+                #print('new["prices_after"]["open"]',new["prices_after"]["open"])
 
+                new['gap'] = float(new["prices_after"]["open"])/float(new["prices_before"]["close"])
+                new['move_up'] = float(new["prices_after"]["high"])/float(new["prices_after"]["open"])
+                new['move_down'] = float(new["prices_after"]["low"])/float(new["prices_after"]["open"])
+                new['move_close'] = float(new["prices_after"]["close"])/float(new["prices_after"]["open"])
 
+                new['gap'] = convert_to_procent(new['gap'])
+                new['move_up'] = convert_to_procent( new['move_up'])
+                new['move_down'] = convert_to_procent(new['move_down'])
+                new['move_close'] =convert_to_procent(new['move_close'])
+  
                 continue
 
                 try:
@@ -353,21 +367,15 @@ def gen_trend(stocks,earnings_folder):
         f.write("<pre>")
         f.write(json.dumps(master, indent=4))
         f.write("</pre>")
-
     os_name = platform.system()
-
-    if ":inux" in os_name:
+    if "Linux" in os_name:
         copied_to_templates = "/home/info34/mysite/templates/"+file_name+".html"
     if "Windows" in os_name:
         #copied_to_templates = "/home/info34/mysite/templates/"+file_name+".html"
         copied_to_templates = r"A:\Users\-\0code\info34\mysite\templates\\"+file_name+".html"
-
     shutil.copy(out_html, copied_to_templates)
     #"/mysite/templates/earnings.html"
-
-
     #/home/info34/mysite/templates39% full – 199.6 MB of your 512.0 MB quota More Info Open Ba
-
     os_name = platform.system()
     if "Windows" in os_name:
         os.startfile(out_json)
@@ -382,9 +390,9 @@ how_many_stocks = 250
 stocks = stocks[0:how_many_stocks]
 for a,stock in enumerate(stocks):
     print(a,stock)
-get_sec_earn_dates(stocks)
-sec_1000_chars(stocks)
-price_history(stocks)
+#get_sec_earn_dates(stocks)
+#sec_1000_chars(stocks)
+#price_history(stocks)
 gen_trend(stocks,"sec-edgar-filings")
 
 
