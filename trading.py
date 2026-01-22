@@ -284,7 +284,7 @@ def gen_trend(stocks,earnings_folder):
                 new["session_after"]=session_after
                 new["folder_time"] = folder_time
                 new["random"] = random
-                master[stock][str_date]=new
+                master[stock][stock+"-"+str_date]=new
                 price_info_day_before = ""
                 price_info_day_after = ""
                 found_begin = 0
