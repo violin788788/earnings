@@ -1,11 +1,12 @@
 import os,subprocess,sys,platform
 cwd = os.getcwd()
 directory_name = os.path.basename(cwd)
-print(directory_name)
-print(cwd)
 system_type = platform.system()
-print(type(system_type))
-print(system_type)
+
+print("directory_name","=",directory_name)
+print("cwd","=",cwd)
+print("type(system_type)","=",type(system_type))
+print("system_type","=",system_type)
 
 print("ok..pushing to github..")
 
