@@ -389,7 +389,7 @@ def gen_trend(stocks,earnings_folder):
             next_br = "\n" + date + "--" + sec_timestamp + "<br>"
             html_sec_datetimes += next_br
 
-    file_to_create = "sec_datetimes.html"
+    file_to_create = "datetimes.html"
     write_file(file_to_create, html_sec_datetimes)
     src = file_to_create
     dst = os.path.join("/home/info34/mysite/templates",file_to_create)
