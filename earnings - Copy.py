@@ -23,9 +23,9 @@ def mine_dates(stock):
 
 
 #sec_1000_chars(stocks)
-def sec_1000_chars(stocks,folder_earnings):
+def sec_1000_chars(stocks):
     for stock in stocks:
-        stock_file = os.path.join(folder_earnings,stock)
+        stock_file = os.path.join("sec-edgar-filings",stock)
         try:
             times_of_year = os.listdir(stock_file)
         except:
@@ -48,15 +48,13 @@ def sec_1000_chars(stocks,folder_earnings):
                 print(f"Truncated yearly report: {specific_file}")
 
 
-#def get_price_history(stocks):
-def get_price_history(stocks,folder_price_history):
+def price_history(stocks):
     import time
     import requests
     import pandas as pd
     API_KEY="65JaxrhDSYET1StvPxZy1KgpnttWna98"
     #folder_history = "price_history"
-    #folder_history = "polygon_price_history"
-    folder_history = folder_price_history
+    folder_history = "polygon_price_history"
     list_history = os.listdir(folder_history)
     for a,stock in enumerate(stocks):
         out_name = stock+"_polygon_daily.csv"
@@ -68,6 +66,7 @@ def get_price_history(stocks,folder_price_history):
         FROM_DATE="2023-01-01"
         TO_DATE="2026-01-01"
         OUT_FILE = os.path.join(folder_history,stock+"_polygon_daily.csv")
+        #OUT_FILE="price_history//"+stock+"_polygon_daily.csv"
         BASE_URL=f"https://api.polygon.io/v2/aggs/ticker/{stock}/range/1/day/{FROM_DATE}/{TO_DATE}"
         params={"adjusted":"true","sort":"asc","limit":50000,"apiKey":API_KEY}
         all_bars=[]
@@ -104,11 +103,7 @@ def get_price_history(stocks,folder_price_history):
 
 
 #get_sec_earn_dates(stocks)
-
-#def get_sec_earn_dates(stocks):
-
-def get_sec_earn_dates(stocks,folder_earnings):
-
+def get_sec_earn_dates(stocks):
     from sec_edgar_downloader import Downloader
     dl = Downloader("YourCompanyName", "your@email.com")
     begin_date = "2023-01-01"
@@ -116,7 +111,7 @@ def get_sec_earn_dates(stocks,folder_earnings):
     for a, stock in enumerate(stocks):
         if "Symbol" in stock:
             continue
-        check = os.path.join(folder_earnings,stock)
+        check = os.path.join("sec-edgar-filings",stock)
         if os.path.exists(check):
             continue
         print(a,stock,"getting quarterly reports")
@@ -147,6 +142,19 @@ def get_stock_list(csv_file):
             print(stock,row)
             back.append(stock)
     return back
+
+def gen_check():
+    out_text = ""
+    folders = ["sec-edgar-filings","price_history"]
+    for a,folder in enumerate(folders):
+        list_dir = os.listdir(folder)
+        number = len(list_dir)
+        out_str = str(number)+"_"+str(folder)
+        out_file = out_str+".txt"
+        print(out_str)
+        with open(out_file, "w", encoding="utf-8") as f:
+            f.write(out_file)
+
 
 #gap_to_procent(price_before,price_after)
 def gap_to_procent(price_before,price_after):
@@ -203,14 +211,7 @@ def copy_file(src,dst):
 
 
 
-
-
-#gen_trend(stocks,"sec-edgar-filings","polygon_price_history")
-#new code def gen_trend(stocks,earnings_folder,price_history_folder):
-
-#gen_trend(stocks,"sec-edgar-filings")
-#def gen_trend(stocks,earnings_folder):
-def gen_trend(stocks,earnings_folder,price_history_folder):
+def gen_trend(stocks,earnings_folder):
     from datetime import datetime, time,timedelta
     back = []
     same_most_index = []
@@ -393,14 +394,10 @@ def gen_trend(stocks,earnings_folder,price_history_folder):
     write_file(file_to_create, html_sec_datetimes)
     src = file_to_create
     os_name = platform.system()
-    cwd = os.getcwd()
-    print("cwd",cwd)
     if "Linux" in os_name:
         dst = os.path.join("/home/info34/mysite/templates",file_to_create)
     if "Windows" in os_name:
-
-        dst_folder = cwd.replace("earnings","mysite\\templates")
-        dst = os.path.join(dst_folder,file_to_create)
+        dst = os.path.join(r"A:\Users\-\0code\info34\mysite\templates",file_to_create)
     copy_file(src,dst)
 
     sys.exit()
@@ -424,11 +421,6 @@ def gen_trend(stocks,earnings_folder,price_history_folder):
 
     if "Windows" in os_name:
         #copied_to_templates = "/home/info34/mysite/templates/"+file_name+".html"
-        dst_folder = cwd.replace("earnings","mysite\\templates")
-        dst = os.path.join(dst_folder,file_to_create)
-
-
-        
         copied_to_templates = r"A:\Users\-\0code\info34\mysite\templates\\"+file_name+".html"
 
     shutil.copy(out_html, copied_to_templates)
@@ -441,36 +433,16 @@ def gen_trend(stocks,earnings_folder,price_history_folder):
 
 #--------run stuff--------------------------------------------------------------------#
 import os,sys,json,platform,shutil
-
-folder_earnings = "sec-edgar-filings"
-folder_price_history = "polygon_price_history"
+stocks = get_stock_list("500.csv")
 
 how_many_stocks = 250
 
-list_stocks = get_stock_list("500.csv")
-list_stocks = list_stocks[0:how_many_stocks]
-for a,stock in enumerate(list_stocks):
+stocks = stocks[0:how_many_stocks]
+for a,stock in enumerate(stocks):
     print(a,stock)
-
-#get_sec_earn_dates(list_stocks,folder_earnings)
-#sec_1000_chars(list_stocks,folder_earnings)
-#get_price_history(list_stocks,folder_price_history)
-gen_trend(list_stocks,folder_earnings,folder_price_history)
-
-
-"""
----ABORTED CODE BELOW---DELETE--DELETE--DELETE--ABORTED CODE BELOW--DELETE--DELETE--DELETE----
----ABORTED CODE BELOW---DELETE--DELETE--DELETE--ABORTED CODE BELOW--DELETE--DELETE--DELETE----
----ABORTED CODE BELOW---DELETE--DELETE--DELETE--ABORTED CODE BELOW--DELETE--DELETE--DELETE----
-
 #get_sec_earn_dates(stocks)
 #sec_1000_chars(stocks)
-#get_price_history(stocks)
-"""
-#get_price_history(stocks,"polygon_price_history")
-
-"""
-#gen_trend(stocks,"sec-edgar-filings")
-"""
+#price_history(stocks)
+gen_trend(stocks,"sec-edgar-filings")
 
 
