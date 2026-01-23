@@ -1,0 +1,15 @@
+create git
+git init
+
+create main branch
+git checkout -b main
+
+add remote
+git remote add origin https://github.com/violin788788/___.git
+
+
+remove git 
+rm -rf .git
+
+remove git 
+rm -rf .git
