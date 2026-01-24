@@ -373,21 +373,27 @@ def gen_trend(stocks,earnings_folder,price_history_folder):
 
     print("missing_dates","=",len(missing_dates))
 
-
     import html
 
-    html_sec_datetimes = "From SEC Edgar database"
-    html_sec_datetimes+= ", literally the second earnings reports were sent from public companies into the SEC database<br>"
+
+
+    html_sec_datetimes = """From SEC Edgar database, the acceptance timestamp from the SEC
+    showing when the SEC received quarterly and yearly reports from public companies.
+    <br><br>
+    """
 
     for stock, stock_data in master.items():
         for date, excess_data in stock_data.items():
             sec_timestamp = str(excess_data['acceptance_timestamp'])
-
+            BMO_or_AMC = str(excess_data['BMO_or_AMC'])
+            converted = excess_data["converted"]
             # ESCAPE IT
             sec_timestamp = html.escape(sec_timestamp)
-
-            next_br = "\n" + date + "--" + sec_timestamp + "<br>"
-            html_sec_datetimes += next_br
+            BMO_or_AMC = html.escape(BMO_or_AMC)
+            html_sec_datetimes+="\n"+date+"--"+sec_timestamp+"--"+BMO_or_AMC+"--"+converted
+            html_sec_datetimes+="<br>"
+            #html_sec_datetimes+=next_br
+        html_sec_datetimes+="<br>"
 
     file_to_create = "datetimes.html"
     write_file(file_to_create, html_sec_datetimes)
@@ -398,9 +404,10 @@ def gen_trend(stocks,earnings_folder,price_history_folder):
     if "Linux" in os_name:
         dst = os.path.join("/home/info34/mysite/templates",file_to_create)
     if "Windows" in os_name:
-
         dst_folder = cwd.replace("earnings","mysite\\templates")
         dst = os.path.join(dst_folder,file_to_create)
+        os.startfile(file_to_create)
+        os.startfile("earnings.html")
     copy_file(src,dst)
 
     sys.exit()
@@ -448,6 +455,7 @@ folder_price_history = "polygon_price_history"
 how_many_stocks = 250
 
 list_stocks = get_stock_list("500.csv")
+list_stocks.sort()
 list_stocks = list_stocks[0:how_many_stocks]
 for a,stock in enumerate(list_stocks):
     print(a,stock)
@@ -456,21 +464,3 @@ for a,stock in enumerate(list_stocks):
 #sec_1000_chars(list_stocks,folder_earnings)
 #get_price_history(list_stocks,folder_price_history)
 gen_trend(list_stocks,folder_earnings,folder_price_history)
-
-
-"""
----ABORTED CODE BELOW---DELETE--DELETE--DELETE--ABORTED CODE BELOW--DELETE--DELETE--DELETE----
----ABORTED CODE BELOW---DELETE--DELETE--DELETE--ABORTED CODE BELOW--DELETE--DELETE--DELETE----
----ABORTED CODE BELOW---DELETE--DELETE--DELETE--ABORTED CODE BELOW--DELETE--DELETE--DELETE----
-
-#get_sec_earn_dates(stocks)
-#sec_1000_chars(stocks)
-#get_price_history(stocks)
-"""
-#get_price_history(stocks,"polygon_price_history")
-
-"""
-#gen_trend(stocks,"sec-edgar-filings")
-"""
-
-
