@@ -479,3 +479,6 @@ for a,stock in enumerate(list_stocks):
 #sec_1000_chars(list_stocks,folder_earnings)
 #get_price_history(list_stocks,folder_price_history)
 gen_trend(list_stocks,folder_earnings,folder_price_history)
+
+
+
