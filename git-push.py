@@ -1,15 +1,19 @@
 import os,subprocess,sys,platform
 cwd = os.getcwd()
 directory_name = os.path.basename(cwd)
+print(directory_name)
+print(cwd)
 system_type = platform.system()
+print(type(system_type))
+print(system_type)
+if "Linux" in system_type:
+    print("do not open chrome")
 
-print("")
-print("cwd","=",cwd)
-print("directory_name","=",directory_name)
-print("system_type","=",system_type)
-print("")
-print("ok..pushing to github..")
-print("")
+#print system type
+
+
+
+#"git push origin main --force"
 
 # Define the Git commands
 commands = [
@@ -28,7 +32,6 @@ with open('token.txt', 'r') as file:
 repo_url = f"https://{token}@github.com/violin788788/"+directory_name+".git"
 
 # Step 3: Execute the Git command (force push)
-
 try:
     # Run the git push command with the token for authentication
     subprocess.run(["git", "push", repo_url, "main", "--force"], check=True)
@@ -39,11 +42,23 @@ except subprocess.CalledProcessError as e:
 
 
 
+from datetime import datetime
+timestamp=datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+iden_last_pushed="git-push"
+for f in os.listdir("."):
+    if iden_last_pushed in f and f.endswith(".txt") and os.path.isfile(f):
+        os.remove(f)
+filename=f"{iden_last_pushed}-{timestamp}.txt"
+with open(filename,"w") as f:
+    f.write("Hello, this is the output.\n")
+print(f"Created file: {filename}")
+
+
 
 sys.exit()
 
 if "Linux" in system_type:
-    print("chrome will not open..running on linux..")
+    print("do not open chrome")
     sys.exit()
 
 url = r"https://github.com/violin788788/"+directory_name
