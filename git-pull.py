@@ -1,3 +1,22 @@
+
+
+
+from datetime import datetime
+timestamp=datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+iden_last_pushed="git-pull"
+for f in os.listdir("."):
+    if iden_last_pushed in f and f.endswith(".txt") and os.path.isfile(f):
+        os.remove(f)
+filename=f"{iden_last_pushed}-{timestamp}.txt"
+with open(filename,"w") as f:
+    f.write("Hello, this is the output.\n")
+print(f"Created file: {filename}")
+
+
+
+
+
+
 import subprocess
 import sys
 
@@ -33,17 +52,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-
-
-
-from datetime import datetime
-timestamp=datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-iden_last_pushed="git-pull"
-for f in os.listdir("."):
-    if iden_last_pushed in f and f.endswith(".txt") and os.path.isfile(f):
-        os.remove(f)
-filename=f"{iden_last_pushed}-{timestamp}.txt"
-with open(filename,"w") as f:
-    f.write("Hello, this is the output.\n")
-print(f"Created file: {filename}")
 
