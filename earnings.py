@@ -201,10 +201,6 @@ def copy_file(src,dst):
     shutil.copy(src,dst)
     print("file copied from",src,"to",dst)
 
-
-
-
-
 #gen_trend(stocks,"sec-edgar-filings","polygon_price_history")
 #new code def gen_trend(stocks,earnings_folder,price_history_folder):
 
@@ -217,9 +213,14 @@ def gen_trend(stocks,earnings_folder,price_history_folder):
     master = {}
     old_stock="--initiate--"
     missing_dates = []
+    stocks2 = {}
     for a,stock in enumerate(stocks):
-        if "Symbol" in stock:
-            continue
+        stocks2[stock] = {}
+    stocks = stocks2
+        
+    #for a,stock in enumerate(stocks):
+    for stock,info in stocks.items():
+        print(stock,info)
         history = load_history(stock)
         earn_dates = {}
         stock_folder = os.path.join(earnings_folder,stock)
@@ -280,9 +281,6 @@ def gen_trend(stocks,earnings_folder,price_history_folder):
                 except:
                     continue
                     skip = "skip"
-
-
-
 
                 if stock!=old_stock:
                     master[stock] = {}
@@ -371,18 +369,12 @@ def gen_trend(stocks,earnings_folder,price_history_folder):
                 except:
                     continue
                     """
-
     print("missing_dates","=",len(missing_dates))
-
     import html
-
-
-
     html_sec_datetimes = """From SEC Edgar database, the acceptance timestamp from the SEC
     showing when the SEC received quarterly and yearly reports from public companies.
     <br><br>
     """
-
     for stock, stock_data in master.items():
         for date, excess_data in stock_data.items():
             sec_timestamp = str(excess_data['acceptance_timestamp'])
@@ -398,13 +390,11 @@ def gen_trend(stocks,earnings_folder,price_history_folder):
             BMO_or_AMC = html.escape(BMO_or_AMC)
             gap = html.escape(gap)
             
-
             html_sec_datetimes+="\n"+date
             html_sec_datetimes+="..."+sec_timestamp
             html_sec_datetimes+="..."+BMO_or_AMC
             html_sec_datetimes+="..."+converted
             html_sec_datetimes+="..."+gap
-
 
             html_sec_datetimes+="<br>"
             #html_sec_datetimes+=next_br

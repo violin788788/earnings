@@ -341,7 +341,7 @@ def gen_trend(stocks,earnings_folder,price_history_folder):
                 new['move_close'] =convert_to_procent(new['move_close'])
 
                 continue
-
+                """
                 try:
                     close_day_before = float(info["before_info"]["close"])
                     price_open = float(info["after_info"]["open"])
@@ -370,6 +370,7 @@ def gen_trend(stocks,earnings_folder,price_history_folder):
                     earnings_info[str_date] = info
                 except:
                     continue
+                    """
 
     print("missing_dates","=",len(missing_dates))
 
@@ -387,10 +388,24 @@ def gen_trend(stocks,earnings_folder,price_history_folder):
             sec_timestamp = str(excess_data['acceptance_timestamp'])
             BMO_or_AMC = str(excess_data['BMO_or_AMC'])
             converted = excess_data["converted"]
+            try:
+                gap = excess_data["gap"]
+            except:
+                gap = "gap missing?"
+            gap = str(gap)
             # ESCAPE IT
             sec_timestamp = html.escape(sec_timestamp)
             BMO_or_AMC = html.escape(BMO_or_AMC)
-            html_sec_datetimes+="\n"+date+"--"+sec_timestamp+"--"+BMO_or_AMC+"--"+converted
+            gap = html.escape(gap)
+            
+
+            html_sec_datetimes+="\n"+date
+            html_sec_datetimes+="..."+sec_timestamp
+            html_sec_datetimes+="..."+BMO_or_AMC
+            html_sec_datetimes+="..."+converted
+            html_sec_datetimes+="..."+gap
+
+
             html_sec_datetimes+="<br>"
             #html_sec_datetimes+=next_br
         html_sec_datetimes+="<br>"
@@ -464,3 +479,6 @@ for a,stock in enumerate(list_stocks):
 #sec_1000_chars(list_stocks,folder_earnings)
 #get_price_history(list_stocks,folder_price_history)
 gen_trend(list_stocks,folder_earnings,folder_price_history)
+
+
+
